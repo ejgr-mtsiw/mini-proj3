@@ -84,18 +84,18 @@ window.onload = function () {
     Swal.fire({
       title: "Inscrição na WebConference",
       html:
-        '<input id="swal-input1" class="swal2-input" placeholder="nome">' +
-        '<input id="swal-input2" class="swal2-input" placeholder="e-mail">',
+        '<input id="participant_nome" class="swal2-input" placeholder="Nome">' +
+        '<input id="participant_email" class="swal2-input" placeholder="E-mail">',
       showCancelButton: true,
       confirmButtonText: "Inscrever",
       cancelButtonText: "Cancelar",
       showLoaderOnConfirm: true,
       preConfirm: () => {
-        const name = document.getElementById('swal-input1').value
-        const email = document.getElementById('swal-input2').value
+        const nome = document.getElementById('participant_nome').value
+        const email = document.getElementById('participant_email').value
 
         // very basic validation
-        if (name.length == 0) {
+        if (nome.length == 0) {
           Swal.showValidationMessage('O nome é de preenchimento obrigatório!')
           return
         }
@@ -105,12 +105,12 @@ window.onload = function () {
           return
         }
 
-        return fetch(`${urlBase}/conferences/1/participants/${email}`, {
+        return fetch(`${urlBase}/conferences/1/participants/`, {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded"
           },
           method: "POST",
-          body: `nomeparticipant=${name}`
+          body: `email=${email}&nome=${nome}`
         })
           .then((response) => {
             if (!response.ok) {
@@ -119,7 +119,7 @@ window.onload = function () {
             return response.json();
           })
           .catch(error => {
-            Swal.showValidationError(`Request failed: ${error}`);
+            Swal.showValidationMessage(`Request failed: ${error}`);
           });
       },
       allowOutsideClick: () => !Swal.isLoading()

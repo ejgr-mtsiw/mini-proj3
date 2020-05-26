@@ -2,8 +2,8 @@
 
 module.exports = function (sequelize, DataTypes) {
     let ConferenceParticipant = sequelize.define('ConferenceParticipant', {
-        idConference: { type: DataTypes.INTEGER, notEmpty: true },
-        idParticipant: { type: DataTypes.STRING, notEmpty: true },
+        idConference: { primaryKey: true, type: DataTypes.INTEGER },
+        idParticipant: { primaryKey: true, type: DataTypes.STRING },
         nomeParticipante: { type: DataTypes.STRING, notEmpty: true },
         dataRegisto: { type: DataTypes.DATE }
     },
@@ -12,9 +12,6 @@ module.exports = function (sequelize, DataTypes) {
             timestamps: false
         }
     );
-
-    // This table doesn't have primary keys
-    ConferenceParticipant.removeAttribute('id');
 
     ConferenceParticipant.associate = function (models) {
         models.SpeakerType.belongsTo(models.Conference,
