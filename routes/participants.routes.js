@@ -7,7 +7,7 @@ const { check, validationResult } = require('express-validator');
 /**
  * Obter a lista de participantes na conferência
  */
-router.get('/', function (req, res) {
+router.get('/conference/:idConference/participants', function (req, res) {
 
     models.ConferenceParticipant.findAll()
         .then(function (participants) {
@@ -18,44 +18,42 @@ router.get('/', function (req, res) {
 /**
  * Adicionar um participante à conferência
  */
-router.post('/:email?',
-    [
-        // email must be an email
-        check('email').normalizeEmail().isEmail(),
-        // nome must be filled
-        check('nome').trim().notEmpty()
-    ], (req, res) => {
+router.post('/conference/:idConference/participants/:email?', [
+    // email must be an email
+    check('email').normalizeEmail().isEmail(),
+    // nome must be filled
+    check('nome').trim().notEmpty()
+], (req, res) => {
 
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(messages.db.requiredData.status)
-                .send(messages.db.requiredData);
-        }
-
-        let email = req.body.email;
-        let nome = req.body.nome;
-
-        models.ConferenceParticipant.create(
-            {
-                idConference: 1,
-                idParticipant: email,
-                nomeParticipante: nome
-            }
-        ).then(function (item) {
-            return res.status(messages.db.successInsert.status)
-                .send(messages.db.successInsert);
-        }).catch(function (err) {
-            console.log(err);
-            return res.status(messages.db.dbError.status)
-                .send(messages.db.dbError);
-        });
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(messages.db.requiredData.status)
+            .send(messages.db.requiredData);
     }
-);
+
+    let email = req.body.email;
+    let nome = req.body.nome;
+
+    models.ConferenceParticipant.create(
+        {
+            idConference: 1,
+            idParticipant: email,
+            nomeParticipante: nome
+        }
+    ).then(function (item) {
+        return res.status(messages.db.successInsert.status)
+            .send(messages.db.successInsert);
+    }).catch(function (err) {
+        console.log(err);
+        return res.status(messages.db.dbError.status)
+            .send(messages.db.dbError);
+    });
+});
 
 /**
  * Remover um participante da conferência
  */
-router.delete('/:email', function (req, res) {
+router.delete('/conference/:idConference/participants/:email', function (req, res) {
     let email = req.params.email;
 
     console.info("Removing participant: " + email);

@@ -18,7 +18,7 @@ window.onload = () => {
                 </tr> 
             </thead><tbody>
         `;
-        const response = await fetch(`${urlBase}/conferences/1/participants`);
+        const response = await fetch(`${urlBase}/conference/1/participants`);
         const participants = await response.json();
         let i = 1;
         for (const participant of participants) {
@@ -54,7 +54,7 @@ window.onload = () => {
                     if (result.value) {
                         let participantId = btnDelete[i].getAttribute("id");
                         try {
-                            const response = await fetch(`${urlBase}/conferences/1/participants/${participantId}`,
+                            const response = await fetch(`${urlBase}/conference/1/participants/${participantId}`,
                                 {
                                     method: "DELETE"
                                 }

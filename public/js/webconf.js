@@ -84,8 +84,8 @@ window.onload = function () {
     Swal.fire({
       title: "Inscrição na WebConference",
       html:
-        '<input id="participant_nome" class="swal2-input" placeholder="Nome">' +
-        '<input id="participant_email" class="swal2-input" placeholder="E-mail">',
+        '<input type="text" id="participant_nome" class="swal2-input" required placeholder="Nome">' +
+        '<input type="email" id="participant_email" class="swal2-input" required placeholder="E-mail">',
       showCancelButton: true,
       confirmButtonText: "Inscrever",
       cancelButtonText: "Cancelar",
@@ -105,7 +105,7 @@ window.onload = function () {
           return
         }
 
-        return fetch(`${urlBase}/conferences/1/participants/`, {
+        return fetch(`${urlBase}/conference/1/participants/`, {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded"
           },
@@ -141,7 +141,7 @@ window.onload = function () {
   (async () => {
     const renderSpeakers = document.getElementById("renderSpeakers")
     let txtSpeakers = ""
-    const response = await fetch(`${urlBase}/conferences/1/speakers`)
+    const response = await fetch(`${urlBase}/conference/1/speakers`)
     const speakers = await response.json()
 
     for (const speaker of speakers) {
@@ -215,7 +215,7 @@ window.onload = function () {
   (async () => {
     const renderSponsors = document.getElementById("renderSponsors")
     let txtSponsors = ""
-    const response = await fetch(`${urlBase}/conferences/1/sponsors`)
+    const response = await fetch(`${urlBase}/conference/1/sponsors`)
     const sponsors = await response.json()
 
     for (const sponsor of sponsors) {

@@ -26,10 +26,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/conferences/1/participants', participantsRouter);
-app.use('/conferences/1/speakers', speakersRouter);
-app.use('/conferences/1/sponsors', sponsorsRouter);
-app.use('/conferences/1/volunteers', volunteersRouter);
+app.use('/', participantsRouter);
+app.use('/', speakersRouter);
+app.use('/', sponsorsRouter);
+app.use('/', volunteersRouter);
 
 
 // catch 404 and forward to error handler
