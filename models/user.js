@@ -15,7 +15,8 @@ module.exports = function (sequelize, DataTypes) {
         status: { type: DataTypes.ENUM('active', 'inactive'), defaultValue: 'active' }
     },
         {
-            timestamps: false
+            timestamps: false,
+            tableName: 'users',
         }
     );
 
