@@ -2,10 +2,13 @@ var models = require('../models');
 var express = require('express');
 var router = express.Router();
 
-router.get('/conference/:idConference/sponsors/', function (req, res) {
+/**
+ * Get all sponsors (admin)
+ */
+router.get('/', (req, res) => {
 
     models.Sponsor.findAll()
-        .then(function (sponsors) {
+        .then((sponsors) => {
             res.send(sponsors);
         });
 });

@@ -16,5 +16,15 @@ module.exports = function (sequelize, DataTypes) {
         }
     );
 
+    Sponsor.associate = function (models) {
+        models.Sponsor.hasMany(models.ConferenceSponsor,
+            {
+                as: 'conferences',
+                foreignKey: {
+                    name: 'idSponsor'
+                }
+            });
+    };
+
     return Sponsor;
 }

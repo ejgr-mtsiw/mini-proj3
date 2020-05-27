@@ -7,7 +7,7 @@ const { check, validationResult } = require('express-validator');
 /**
  * Get the list of speakers
  */
-router.get('/conference/:idConference/speakers', function (req, res) {
+router.get('/', (req, res) => {
 
     models.Speaker.findAll()
         .then(function (speakers) {
@@ -18,7 +18,7 @@ router.get('/conference/:idConference/speakers', function (req, res) {
 /**
  * Get the list of speakers types
  */
-router.get('/speakers/types', function (req, res) {
+router.get('/types', (req, res) => {
 
     models.SpeakerType.findAll()
         .then(function (speakertypes) {
@@ -29,7 +29,7 @@ router.get('/speakers/types', function (req, res) {
 /**
  * Add a new speaker
  */
-router.post('/conference/:idConference/speakers/', [
+router.post('/', [
     // Name can't be empty
     check('nome').trim().notEmpty(),
     // Cargo can't be empty
@@ -86,7 +86,7 @@ router.post('/conference/:idConference/speakers/', [
 /**
  * Update a speaker
  */
-router.put('/conference/:idConference/speakers/:id', [
+router.put('/:id', [
     // Name can't be empty
     check('nome').trim().notEmpty(),
     // Cargo can't be empty
@@ -146,7 +146,7 @@ router.put('/conference/:idConference/speakers/:id', [
 /**
  * Remove a speaker from the database
  */
-router.delete('/conference/:idConference/speakers/:id', function (req, res) {
+router.delete('/:id', (req, res) => {
     let id = req.params.id;
 
     console.info("Removing speaker: " + id);
