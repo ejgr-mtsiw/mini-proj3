@@ -28,8 +28,8 @@ router.post('/:email?',
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(messages.db.dbError.status)
-                .send(messages.db.dbError);
+            return res.status(messages.db.requiredData.status)
+                .send(messages.db.requiredData);
         }
 
         let email = req.body.email;
@@ -49,7 +49,8 @@ router.post('/:email?',
             return res.status(messages.db.dbError.status)
                 .send(messages.db.dbError);
         });
-    });
+    }
+);
 
 /**
  * Remover um participante da conferência
