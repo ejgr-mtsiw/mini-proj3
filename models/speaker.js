@@ -9,7 +9,7 @@ module.exports = function (sequelize, DataTypes) {
         bio: { type: DataTypes.TEXT },
         foto: { type: DataTypes.STRING },
         link: { type: DataTypes.STRING },
-        idSpeakerTipo: { type: DataTypes.INTEGER },
+        idSpeakerTipo: { type: DataTypes.INTEGER, defaultValue: 1 },
         active: { type: DataTypes.INTEGER },
         facebook: { type: DataTypes.STRING },
         linkedin: { type: DataTypes.STRING },
