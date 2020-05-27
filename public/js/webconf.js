@@ -38,7 +38,7 @@ window.onload = function () {
           //Swal.fire({ title: "Autenticação feita com sucesso!" })
           // Guardar token
           sessionStorage.token = email;
-          window.location.replace("admin/participants.html")
+          window.location.replace("admin/participants/participants.html")
           return
         }
 

@@ -28,7 +28,7 @@ window.onload = () => {
                     <td>${participant.nomeParticipante}</td>
                     <td>${participant.idParticipant}</td>
                     <td class="text-right">
-                    <i id='${participant.idParticipant}' class='fas fa-trash-alt remove'></i>
+                    <i id='remove-${participant.idParticipant}' idparticipant='${participant.idParticipant}' class='fas fa-trash-alt remove'></i>
                     </td>
                 </tr>
             `;
@@ -40,7 +40,9 @@ window.onload = () => {
         // Manage click delete        
         const btnDelete = document.getElementsByClassName("remove");
         for (let i = 0; i < btnDelete.length; i++) {
-            btnDelete[i].addEventListener("click", () => {
+            btnDelete[i].addEventListener("click", function () {
+                let participantId = this.getAttribute("idparticipant");
+                
                 Swal.fire({
                     title: 'Tem a certeza?',
                     text: "Não será possível reverter a remoção!",
@@ -52,7 +54,6 @@ window.onload = () => {
                     confirmButtonText: 'Remover'
                 }).then(async (result) => {
                     if (result.value) {
-                        let participantId = btnDelete[i].getAttribute("id");
                         try {
                             const response = await fetch(`${urlBase}/conference/1/participants/${participantId}`,
                                 {
