@@ -28,17 +28,6 @@ window.onload = () => {
                 method: "POST",
                 body: `nome=${txtName}&cargo=${txtJob}&foto=${txtPhoto}&facebook=${txtFacebook}&twitter=${txtTwitter}&linkedin=${txtLinkedin}&bio=${txtBio}&active=1`
             });
-            const newSpeakerId = response.headers.get("Location");
-            const newSpeaker = await response.json();
-            // Associa orador à conferência WebConference
-            // const newUrl = `${urlBase}/conference/1/speakers/${newSpeakerId}`
-            // const response2 = await fetch(newUrl, {
-            //     headers: {
-            //         "Content-Type": "application/x-www-form-urlencoded"
-            //     },
-            //     method: "POST"
-            // })
-            // const newSpeaker2 = await response2.json()
         } else {
             // Atualiza Orador
             response = await fetch(`${urlBase}/conference/1/speakers/${txtSpeakerId}`, {
@@ -46,7 +35,7 @@ window.onload = () => {
                     "Content-Type": "application/x-www-form-urlencoded"
                 },
                 method: "PUT",
-                body: `nome=${txtName}&cargo=${txtJob}&foto=${txtPhoto}&facebook=${txtFacebook}&twitter=${txtTwitter}&linkedin=${txtLinkedin}&bio=${txtBio}&active=1`
+                body: `id=${txtSpeakerId}&nome=${txtName}&cargo=${txtJob}&foto=${txtPhoto}&facebook=${txtFacebook}&twitter=${txtTwitter}&linkedin=${txtLinkedin}&bio=${txtBio}&active=1`
             });
 
             const newSpeaker = await response.json();
