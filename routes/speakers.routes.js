@@ -27,7 +27,7 @@ router.get('/speakers/types', function (req, res) {
 });
 
 /**
- * Add a new speaker to the conference
+ * Add a new speaker
  */
 router.post('/conference/:idConference/speakers/', [
     // Name can't be empty
@@ -87,8 +87,6 @@ router.post('/conference/:idConference/speakers/', [
  * Update a speaker
  */
 router.put('/conference/:idConference/speakers/:id', [
-    // id can't be empty and must be a number
-    check('id').trim().notEmpty().isNumeric(),
     // Name can't be empty
     check('nome').trim().notEmpty(),
     // Cargo can't be empty
@@ -114,7 +112,7 @@ router.put('/conference/:idConference/speakers/:id', [
             .send(messages.db.requiredData);
     }
 
-    let id = req.body.id;
+    let idSpeaker = req.body.idSpeaker;
     let nome = req.body.nome;
     let cargo = req.body.cargo;
     let bio = req.body.bio;
@@ -133,7 +131,7 @@ router.put('/conference/:idConference/speakers/:id', [
         'twitter': twitter
     }, {
         where: {
-            idSpeaker: id
+            'idSpeaker': idSpeaker
         }
     }).then(function (item) {
         return res.status(messages.db.successUpdate.status)
@@ -146,7 +144,7 @@ router.put('/conference/:idConference/speakers/:id', [
 });
 
 /**
- * Remove a speaker from a conference
+ * Remove a speaker from the database
  */
 router.delete('/conference/:idConference/speakers/:id', function (req, res) {
     let id = req.params.id;
