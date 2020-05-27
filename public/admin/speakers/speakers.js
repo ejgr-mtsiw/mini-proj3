@@ -6,6 +6,10 @@ window.onload = () => {
     const tblSpeakers = document.getElementById("tblSpeakers");
     const frmSpeaker = document.getElementById("frmSpeaker");
 
+    frmSpeaker.addEventListener("reset", (event) => {
+        isNew = true;
+    });
+
     frmSpeaker.addEventListener("submit", async (event) => {
         event.preventDefault();
         const txtName = document.getElementById("txtName").value;
@@ -15,77 +19,54 @@ window.onload = () => {
         const txtTwitter = document.getElementById("txtTwitter").value;
         const txtLinkedin = document.getElementById("txtLinkedin").value;
         const txtBio = document.getElementById("txtBio").value;
-        const txtSpeakerId = document.getElementById("txtSpeakerId").value;
+        const txtSpeakerId = document.getElementById("txtSpeakerId").value || 0;
 
         try {
             // Verifica flag isNew para saber se se trata de uma adição ou de um atualização dos dados de um orador
             let response;
+            let msgBody = `idSpeaker=${txtSpeakerId}&nome=${txtName}&cargo=${txtJob}&foto=${txtPhoto}&facebook=${txtFacebook}&twitter=${txtTwitter}&linkedin=${txtLinkedin}&bio=${txtBio}`;
             if (isNew) {
                 // Adiciona Orador
-                response = await fetch(`${urlBase}/conference/1/speakers/`, {
+                response = await fetch(`${urlBase}/speakers`, {
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded"
                     },
                     method: "POST",
-                    body: `nome=${txtName}&cargo=${txtJob}&foto=${txtPhoto}&facebook=${txtFacebook}&twitter=${txtTwitter}&linkedin=${txtLinkedin}&bio=${txtBio}`
+                    body: msgBody
                 });
-
-                let result = await response.json();
-
-                if (result.success == true) {
-                    frmSpeaker.reset();
-
-                    Swal.fire({
-                        title: 'Adicionado!',
-                        text: result.message.pt,
-                        icon: 'success',
-                        showCancelButton: false,
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'Fechar'
-                    });
-                } else {
-                    Swal.fire({
-                        title: 'Erro!',
-                        text: result.message.pt,
-                        icon: 'error',
-                        showCancelButton: false,
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'Fechar'
-                    });
-                }
             } else {
                 // Atualiza Orador
-                response = await fetch(`${urlBase}/conference/1/speakers/${txtSpeakerId}`, {
+                response = await fetch(`${urlBase}/speakers/${txtSpeakerId}`, {
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded"
                     },
                     method: "PUT",
-                    body: `idSpeaker=${txtSpeakerId}&nome=${txtName}&cargo=${txtJob}&foto=${txtPhoto}&facebook=${txtFacebook}&twitter=${txtTwitter}&linkedin=${txtLinkedin}&bio=${txtBio}`
+                    body: msgBody
                 });
+            }
 
-                let result = await response.json();
+            let result = await response.json();
 
-                if (result.success == true) {
-                    frmSpeaker.reset();
+            if (result.success == true) {
+                frmSpeaker.reset();
 
-                    Swal.fire({
-                        title: 'Atualizado!',
-                        text: result.message.pt,
-                        icon: 'success',
-                        showCancelButton: false,
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'Fechar'
-                    });
-                } else {
-                    Swal.fire({
-                        title: 'Erro!',
-                        text: result.message.pt,
-                        icon: 'error',
-                        showCancelButton: false,
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'Fechar'
-                    });
-                }
+                Swal.fire({
+                    title: 'Sucesso',
+                    text: result.message.pt,
+                    icon: 'success',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Fechar'
+                });
+            } else {
+                Swal.fire({
+                    title: 'Erro',
+                    text: result.message.pt,
+                    icon: 'error',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Fechar'
+                });
             }
         } catch (err) {
             Swal.fire({
@@ -97,7 +78,7 @@ window.onload = () => {
                 confirmButtonText: 'Fechar'
             });
         }
-        isNew = true;
+
         renderSpeakers();
     })
 
@@ -113,7 +94,7 @@ window.onload = () => {
                 </tr> 
             </thead><tbody>
         `
-        const response = await fetch(`${urlBase}/conference/1/speakers`)
+        const response = await fetch(`${urlBase}/speakers`)
         const speakers = await response.json()
         let i = 1
         for (const speaker of speakers) {
@@ -172,7 +153,7 @@ window.onload = () => {
                 }).then(async (result) => {
                     if (result.value) {
                         try {
-                            const response = await fetch(`${urlBase}/conference/1/speakers/${idSpeaker}`, {
+                            const response = await fetch(`${urlBase}/speakers/${idSpeaker}`, {
                                 method: "DELETE"
                             });
 

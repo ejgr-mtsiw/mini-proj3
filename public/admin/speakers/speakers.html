@@ -10,7 +10,7 @@
 
   <script>
     if (!sessionStorage.token) {
-      window.location.replace("/index.html")
+      window.location.replace("../../index.html")
     }
   </script>
 
@@ -41,9 +41,9 @@
     <!-- Sidebar -->
     <ul class="sidebar navbar-nav">
       <li class="nav-item">
-        <a class="nav-link" href="../participants/participants.html">
+        <a class="nav-link" href="../conferences/conferences.html">
           <i class="fas fa-fw fa-tachometer-alt"></i>
-          <span>Participantes</span></a>
+          <span>Conferências</span></a>
       </li>
 
       <li class="nav-item active">
@@ -74,7 +74,7 @@
 
         <div class="jumbotron">
           <h1 class="display-3">Oradores</h1>
-          <p class="lead">Gestão de Oradores na WebConference</p>
+          <p class="lead">Gestão de Oradores</p>
           <hr class="my-2">
           <form id="frmSpeaker">
             <input type="hidden" id="txtSpeakerId">
