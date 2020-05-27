@@ -1,60 +1,85 @@
-const urlBase = "https://mtsiw.duckdns.org/pwa"
-let isNew = true
+const urlBase = "https://mtsiw.duckdns.org/pwa";
+let isNew = true;
 
 window.onload = () => {
     // References to HTML objects   
-    const tblSponsors = document.getElementById("tblSponsors")
-    const frmSponsor = document.getElementById("frmSponsor")
+    const tblSponsors = document.getElementById("tblSponsors");
+    const frmSponsor = document.getElementById("frmSponsor");
+
+    frmSponsor.addEventListener("reset", (event) => {
+        isNew = true;
+    });
 
     frmSponsor.addEventListener("submit", async (event) => {
-        event.preventDefault()
-        const txtSponsorId = document.getElementById("txtSponsorId").value
-        const txtName = document.getElementById("txtName").value
-        const txtLogo = document.getElementById("txtLogo").value
-        const txtCategory = document.getElementById("txtCategory").value
-        const txtLink = document.getElementById("txtLink").value
-        
+        event.preventDefault();
+        const txtSponsorId = document.getElementById("txtSponsorId").value;
+        const txtName = document.getElementById("txtName").value;
+        const txtLogo = document.getElementById("txtLogo").value;
+        const txtCategory = document.getElementById("txtCategory").value;
+        const txtLink = document.getElementById("txtLink").value;
 
-        // Verifica flag isNew para saber se se trata de uma adição ou de um atualização dos dados de um sponsor
-        let response
-        if (isNew) {
-            // Adiciona Sponsor
-            response = await fetch(`${urlBase}/sponsors`, {
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                method: "POST",
-                body: `nome=${txtName}&logo=${txtLogo}&categoria=${txtCategory}&link=${txtLink}&active=1`
-            })
-            const newSponsorId = response.headers.get("Location")
-            const newSponsor = await response.json()
-            // Associa sponsor à conferência WebConfernce
-            const newUrl = `${urlBase}/conferences/1/sponsors/${newSponsorId}`
-            const response2 = await fetch(newUrl, {
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                method: "POST"
-            })
-            const newSponsor2 = await response2.json()
-        } else {
-            // Atualiza Sponsor
-            response = await fetch(`${urlBase}/sponsors/${txtSponsorId}`, {
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                method: "PUT",
-                body: `nome=${txtName}&logo=${txtLogo}&categoria=${txtCategory}&link=${txtLink}&active=1`
-            })
+        try {
+            // Verifica flag isNew para saber se se trata de uma adição ou de um atualização dos dados de um sponsor
+            let response;
+            let msgBody = `idSponsor=${txtSponsorId}&nome=${txtName}&logo=${txtLogo}&categoria=${txtCategory}&link=${txtLink}`;
+            if (isNew) {
+                // Adiciona Sponsor
+                response = await fetch(`${urlBase}/sponsors`, {
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    method: "POST",
+                    body: msgBody
+                });
+            } else {
+                // Atualiza Sponsor
+                response = await fetch(`${urlBase}/sponsors/${txtSponsorId}`, {
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    method: "PUT",
+                    body: msgBody
+                });
+            }
 
-            const newSponsor = await response.json()
+            let result = await response.json();
+
+            if (result.success == true) {
+                frmSponsor.reset();
+
+                Swal.fire({
+                    title: 'Sucesso',
+                    text: result.message.pt,
+                    icon: 'success',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Fechar'
+                });
+            } else {
+                Swal.fire({
+                    title: 'Erro!',
+                    text: result.message.pt,
+                    icon: 'error',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Fechar'
+                });
+            }
+        } catch (err) {
+            Swal.fire({
+                title: 'Erro!',
+                text: err,
+                icon: 'error',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Fechar'
+            });
         }
-        isNew = true
-        renderSponsors()
-    })
+
+        renderSponsors();
+    });
 
     const renderSponsors = async () => {
-        frmSponsor.reset()
         let strHtml = `
             <thead >
                 <tr><th class='w-100 text-center bg-warning' colspan='4'>Lista de Sponsors</th></tr>
@@ -65,10 +90,10 @@ window.onload = () => {
                     <th class="text-right">Ações</th>              
                 </tr> 
             </thead><tbody>
-        `
-        const response = await fetch(`${urlBase}/conferences/1/sponsors`)
-        const sponsors = await response.json()
-        let i = 1
+        `;
+        const response = await fetch(`${urlBase}/sponsors`);
+        const sponsors = await response.json();
+        let i = 1;
         for (const sponsor of sponsors) {
             strHtml += `
                 <tr>
@@ -76,37 +101,39 @@ window.onload = () => {
                     <td>${sponsor.nome}</td>
                     <td>${sponsor.categoria}</td>
                     <td class="text-right">
-                        <i id='${sponsor.idSponsor}' class='fas fa-edit edit'></i>
-                        <i id='${sponsor.idSponsor}' class='fas fa-trash-alt remove'></i>
+                        <i id='edit-${sponsor.idSponsor}' idsponsor='${sponsor.idSponsor}' class='fas fa-edit edit'></i>
+                        <i id='remove-${sponsor.idSponsor}' idsponsor='${sponsor.idSponsor}' class='fas fa-trash-alt remove'></i>
                     </td>
                 </tr>
-            `
-            i++
+            `;
+            i++;
         }
-        strHtml += "</tbody>"
-        tblSponsors.innerHTML = strHtml
+        strHtml += "</tbody>";
+        tblSponsors.innerHTML = strHtml;
 
         // Gerir o clique no ícone de Editar        
-        const btnEdit = document.getElementsByClassName("edit")
+        const btnEdit = document.getElementsByClassName("edit");
         for (let i = 0; i < btnEdit.length; i++) {
-            btnEdit[i].addEventListener("click", () => {
-                isNew = false
+            btnEdit[i].addEventListener("click", function () {
+                let idSponsor = this.getAttribute('idsponsor');
+                isNew = false;
                 for (const sponsor of sponsors) {
-                    if (sponsor.idSponsor == btnEdit[i].getAttribute("id")) {
-                        document.getElementById("txtSponsorId").value = sponsor.idSponsor
-                        document.getElementById("txtName").value = sponsor.nome
-                        document.getElementById("txtLogo").value = sponsor.logo
-                        document.getElementById("txtCategory").value = sponsor.categoria
-                        document.getElementById("txtLink").value = sponsor.link
+                    if (sponsor.idSponsor == idSponsor) {
+                        document.getElementById("txtSponsorId").value = sponsor.idSponsor;
+                        document.getElementById("txtName").value = sponsor.nome;
+                        document.getElementById("txtLogo").value = sponsor.logo;
+                        document.getElementById("txtCategory").value = sponsor.categoria;
+                        document.getElementById("txtLink").value = sponsor.link;
                     }
                 }
-            })
+            });
         }
 
         // Gerir o clique no ícone de Remover        
         const btnDelete = document.getElementsByClassName("remove")
         for (let i = 0; i < btnDelete.length; i++) {
-            btnDelete[i].addEventListener("click", () => {
+            btnDelete[i].addEventListener("click", function () {
+                let idSponsor = this.getAttribute('idsponsor');
                 Swal.fire({
                     title: 'Tem a certeza?',
                     text: "Não será possível reverter a remoção!",
@@ -118,26 +145,49 @@ window.onload = () => {
                     confirmButtonText: 'Remover'
                 }).then(async (result) => {
                     if (result.value) {
-                        let sponsorId = btnDelete[i].getAttribute("id")
                         try {
-                            const response = await fetch(`${urlBase}/conferences/1/sponsors/${sponsorId}`, {
+                            const response = await fetch(`${urlBase}/sponsors/${idSponsor}`, {
                                 method: "DELETE"
-                            })
-                            if (response.status == 204) {
-                                swal('Removido!', 'O sponsor foi removido da Conferência.', 'success')
+                            });
+
+                            const result = await response.json();
+
+                            if (result.success == true) {
+                                Swal.fire({
+                                    title: 'Removido!',
+                                    text: result.message.pt,
+                                    icon: 'success',
+                                    showCancelButton: false,
+                                    confirmButtonColor: '#3085d6',
+                                    confirmButtonText: 'Fechar'
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Erro!',
+                                    text: result.message.pt,
+                                    icon: 'error',
+                                    showCancelButton: false,
+                                    confirmButtonColor: '#3085d6',
+                                    confirmButtonText: 'Fechar'
+                                });
                             }
                         } catch (err) {
-                            swal({
-                                type: 'error',
+                            Swal.fire({
+                                icon: 'error',
                                 title: 'Erro',
-                                text: err
-                            })
+                                text: err,
+                                showCancelButton: false,
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'Fechar'
+
+                            });
                         }
-                        renderSponsors()
+                        renderSponsors();
                     }
                 })
             })
         }
-    }
-    renderSponsors()
-}
+    };
+
+    renderSponsors();
+};
