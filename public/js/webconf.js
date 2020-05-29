@@ -95,7 +95,7 @@ window.onload = function () {
                         "Content-Type": "application/x-www-form-urlencoded"
                     },
                     method: "POST",
-                    body: `email=${email}&nome=${nome}`
+                    body: `idConference=1&email=${email}&nome=${nome}`
                 })
                     .then((response) => {
                         if (!response.ok) {
