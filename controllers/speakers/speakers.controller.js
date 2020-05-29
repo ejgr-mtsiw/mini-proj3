@@ -18,6 +18,28 @@ exports.getAllSpeakers = (req, res) => {
 };
 
 /**
+ * Get all speakers and tag the current conference
+ */
+exports.getSpeakersWithConference = (req, res) => {
+
+    //TODO: validate!
+    let idConference = req.params.idConference;
+
+    models.Speaker.findAll({
+        include: {
+            as: 'conferences',
+            model: models.ConferenceSpeaker,
+            where: {
+                'idConference': idConference
+            },
+            required: false
+        }
+    }).then(function (speakers) {
+        res.send(speakers);
+    });
+};
+
+/**
  * Get the list of speakers types
  */
 exports.getSpeakerTypes = (req, res) => {

@@ -9,6 +9,11 @@ const speakerController = require('../controllers/speakers/speakers.controller')
 router.get('/', speakerController.getAllSpeakers);
 
 /**
+ * Get all sponsors (admin) taggin the current conference
+ */
+router.get('/conference/:idConference/', speakerController.getSpeakersWithConference);
+
+/**
  * Get the list of speakers types
  */
 router.get('/types', speakerController.getSpeakerTypes);
