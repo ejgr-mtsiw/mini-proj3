@@ -72,100 +72,101 @@
                     <h1 class="display-3">Comité Científico</h1>
                     <p class="lead">Gestão dos membros do Comité Científico</p>
                     <hr class="my-2">
-                    <div class="container"></div>
-                    <form id="frmCommittee">
-                        <input type="hidden" id="txtCommitteeMemberId">
+                    <div class="container">
+                        <form id="frmCommittee">
+                            <input type="hidden" id="txtCommitteeMemberId">
 
-                        <div class="row">
-                            <div class="form-group col">
-                                <label for="txtNome">Nome</label>
-                                <input type="text" placeholder="Nome" class="form-control" id="txtNome" required>
+                            <div class="row">
+                                <div class="form-group col">
+                                    <label for="txtNome">Nome</label>
+                                    <input type="text" placeholder="Nome" class="form-control" id="txtNome" required>
+                                </div>
                             </div>
+
+                            <div class="row">
+                                <div class="form-group col">
+                                    <label for="txtEmail">E-mail</label>
+                                    <input type="email" placeholder="E-mail" class="form-control" id="txtEmail"
+                                        required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col">
+                                    <label for="txtFoto">Foto</label>
+                                    <input type="url" placeholder="Fotografia" class="form-control"
+                                        placeholder="http://xxx.pt" id="txtFoto" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col">
+                                    <label for="txtInstituicao">Instituição</label>
+                                    <input type="text" placeholder="Instituição" class="form-control"
+                                        id="txtInstituicao" required>
+                                </div>
+                                <div class="form-group col">
+                                    <label for="txtCargo">Cargo</label>
+                                    <input type="text" placeholder="Cargo" class="form-control" id="txtCargo" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col">
+                                    <label for="txtFacebook">Facebook</label>
+                                    <input type="url" placeholder="Facebook" class="form-control" id="txtFacebook">
+                                </div>
+                                <div class="form-group col">
+                                    <label for="txtTwitter">Twitter</label>
+                                    <input type="url" placeholder="Twitter" class="form-control" id="txtTwitter">
+                                </div>
+
+                                <div class="form-group col">
+                                    <label for="txtLinkedin">LinkedIn</label>
+                                    <input type="url" placeholder="Linkedin" class="form-control" id="txtLinkedin">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col">
+                                    <label for="txtBio">Bio</label>
+                                    <textarea id="txtBio" placeholder="Biografia" class="form-control" cols="30"
+                                        rows="5"></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Buttons-->
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    <button type="submit" class="btn btn-primary mb-2">Guardar dados</button>
+                                    <button type="reset" class="btn btn-primary mb-2">Limpar valores</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!--################## MEMBROS DO COMITÉ ###################-->
+                    <div id="divCommittee" class="container">
+                        <!-- Table -->
+                        <div class="table-responsive">
+                            <table id="tblCommittee" class="table table-sm">
+                            </table>
                         </div>
-
-                        <div class="row">
-                            <div class="form-group col">
-                                <label for="txtEmail">E-mail</label>
-                                <input type="email" placeholder="E-mail" class="form-control" id="txtEmail" required>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col">
-                                <label for="txtFoto">Foto</label>
-                                <input type="url" placeholder="Fotografia" class="form-control" placeholder="http://xxx.pt"
-                                    id="txtFoto" required>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col">
-                                <label for="txtInstituicao">Instituição</label>
-                                <input type="text" placeholder="Instituição" class="form-control" id="txtInstituicao"
-                                    required>
-                            </div>
-                            <div class="form-group col">
-                                <label for="txtCargo">Cargo</label>
-                                <input type="text" placeholder="Cargo" class="form-control" id="txtCargo" required>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col">
-                                <label for="txtFacebook">Facebook</label>
-                                <input type="url" placeholder="Facebook" class="form-control" id="txtFacebook">
-                            </div>
-                            <div class="form-group col">
-                                <label for="txtTwitter">Twitter</label>
-                                <input type="url" placeholder="Twitter" class="form-control" id="txtTwitter">
-                            </div>
-
-                            <div class="form-group col">
-                                <label for="txtLinkedin">LinkedIn</label>
-                                <input type="url" placeholder="Linkedin" class="form-control" id="txtLinkedin">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col">
-                                <label for="txtBio">Bio</label>
-                                <textarea id="txtBio" placeholder="Biografia" class="form-control" cols="30"
-                                    rows="5"></textarea>
-                            </div>
-                        </div>
-
-                        <!-- Buttons-->
-                        <div class="form-row">
-                            <div class="form-group col-md-12">
-                                <button type="submit" class="btn btn-primary mb-2">Guardar dados</button>
-                                <button type="reset" class="btn btn-primary mb-2">Limpar valores</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-
-                <!--################## MEMBROS DO COMITÉ ###################-->
-                <div id="divCommittee" class="container">
-                    <!-- Table -->
-                    <div class="table-responsive">
-                        <table id="tblCommittee" class="table table-sm">
-                        </table>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- /.container-fluid -->
+            <!-- /.container-fluid -->
 
-        <!-- Sticky Footer -->
-        <footer class="sticky-footer">
-            <div class="container my-auto">
-                <div class="copyright text-center my-auto">
-                    <span>Copyright © WebConference 2018</span>
+            <!-- Sticky Footer -->
+            <footer class="sticky-footer">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright © WebConference 2018</span>
+                    </div>
                 </div>
-            </div>
-        </footer>
-    </div>
-    <!-- /.content-wrapper -->
+            </footer>
+        </div>
+        <!-- /.content-wrapper -->
 
     </div>
     <!-- /#wrapper -->
