@@ -1,0 +1,14 @@
+[
+    {
+        "idCommitteeMember": "1",
+        "nome": "Nome",
+        "email": "e@mail.com",
+        "foto": "https://conexaoto.com.br/image/103136_1000x600_width.jpg",
+        "instituicao": "Instituição",
+        "cargo": "Cargo",
+        "bio": "Biografia",
+        "facebook": "https://www.facebook.com",
+        "linkedin": "https://www.linkedin.com",
+        "twitter": ""
+    }
+]

@@ -1,83 +1,98 @@
-const urlBase = "https://mtsiw.duckdns.org/pwa"
-let isNew = true
+const urlBase = "https://mtsiw.duckdns.org/pwa";
+let isNew = true;
 
 window.onload = () => {
     // References to HTML objects   
-    const tblCommittee = document.getElementById("tblCommittee")
-    const frmCommittee = document.getElementById("frmCommittee")
+    const tblCommittee = document.getElementById("tblCommittee");
+    const frmCommittee = document.getElementById("frmCommittee");
 
+    frmCommittee.addEventListener("reset", (event) => {
+        isNew = true;
+    });
 
     frmCommittee.addEventListener("submit", async (event) => {
-        event.preventDefault()
-        const txtCommitteeMemberId = document.getElementById("txtCommitteeMemberId").value
-        const txtName = document.getElementById("txtName").value
-        const txtEmail = document.getElementById("txtEmail").value
-        const txtInstitution = document.getElementById("txtInstitution").value
-        const txtOffice = document.getElementById("txtOffice").value
-        const txtPhoto = document.getElementById("txtPhoto").value
-        const txtFacebook = document.getElementById("txtFacebook").value
-        const txtTwitter = document.getElementById("txtTwitter").value
-        const txtLinkedin = document.getElementById("txtLinkedin").value
-        const txtBio = document.getElementById("txtBio").value
+        event.preventDefault();
+        const txtCommitteeMemberId = document.getElementById("txtCommitteeMemberId").value;
+        const txtNome = document.getElementById("txtNome").value;
+        const txtEmail = document.getElementById("txtEmail").value;
+        const txtInstituicao = document.getElementById("txtInstituicao").value;
+        const txtCargo = document.getElementById("txtCargo").value;
+        const txtFoto = document.getElementById("txtFoto").value;
+        const txtFacebook = document.getElementById("txtFacebook").value;
+        const txtTwitter = document.getElementById("txtTwitter").value;
+        const txtLinkedin = document.getElementById("txtLinkedin").value;
+        const txtBio = document.getElementById("txtBio").value;
 
         // Verifica flag isNew para saber se se trata de uma adição ou de
         // uma atualização dos dados de um membro do comité
-        let response
-        if (isNew) {
-            // Adiciona Membro do comité
-            response = await fetch(`${urlBase}/committee`, {
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                method: "POST",
-                body: `name=${txtName}` +
-                    `&email=${txtEmail}` +
-                    `&institution=${txtInstitution}` +
-                    `&office=${txtOffice}` +
-                    `&photo=${txtPhoto}` +
-                    `&facebook=${txtFacebook}` +
-                    `&twitter=${txtTwitter}` +
-                    `&linkedin=${txtLinkedin}` +
-                    `&bio=${txtBio}` +
-                    `&active=1`
-            })
-            const newCommitteeMemberId = response.headers.get("Location")
-            const newCommitteeMember = await response.json()
+        try {
+            let response;
+            let msgBody = `idCommitteeMember=${txtCommitteeMemberId}` +
+                `&nome=${txtNome}` +
+                `&email=${txtEmail}` +
+                `&instituicao=${txtInstituicao}` +
+                `&cargo=${txtCargo}` +
+                `&foto=${txtFoto}` +
+                `&facebook=${txtFacebook}` +
+                `&twitter=${txtTwitter}` +
+                `&linkedin=${txtLinkedin}` +
+                `&bio=${txtBio}`;
 
-            // Associa Membro do comité à conferência WebConfernce
-            const newUrl = `${urlBase}/conferences/1/committee/${newCommitteeMemberId}`
-            const response2 = await fetch(newUrl, {
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                method: "POST"
-            })
-            const newVolunteer2 = await response2.json()
-        } else {
-            // Atualiza Membro do comité
-            response = await fetch(`${urlBase}/committee/${txtCommitteeMemberId}`, {
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                method: "PUT",
-                body: `name=${txtName}` +
-                    `&email=${txtEmail}` +
-                    `&institution=${txtInstitution}` +
-                    `&office=${txtOffice}` +
-                    `&photo=${txtPhoto}` +
-                    `&facebook=${txtFacebook}` +
-                    `&twitter=${txtTwitter}` +
-                    `&linkedin=${txtLinkedin}` +
-                    `&bio=${txtBio}` +
-                    `&active=1`
-            })
+            if (isNew) {
+                // Adiciona Membro do comité
+                response = await fetch(`${urlBase}/committee`, {
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    method: "POST",
+                    body: msgBody
+                });
+            } else {
+                // Atualiza Membro do comité
+                response = await fetch(`${urlBase}/committee/${txtCommitteeMemberId}`, {
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    method: "PUT",
+                    body: msgBody
+                })
+            }
 
-            const newCommitteeMember = await response.json()
+            let result = await response.json();
+
+            if (result.success == true) {
+                frmCommittee.reset();
+
+                Swal.fire({
+                    title: 'Sucesso',
+                    text: result.message.pt,
+                    icon: 'success',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Fechar'
+                });
+            } else {
+                Swal.fire({
+                    title: 'Erro!',
+                    text: result.message.pt,
+                    icon: 'error',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Fechar'
+                });
+            }
+        } catch (err) {
+            Swal.fire({
+                title: 'Erro!',
+                text: err,
+                icon: 'error',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Fechar'
+            });
         }
-        isNew = true
-        renderCommittee()
+        renderCommittee();
     })
-
 
     const renderCommittee = async () => {
         frmCommittee.reset()
@@ -98,84 +113,47 @@ window.onload = () => {
                 </tr> 
             </thead><tbody>
         `
-        //const response = await fetch(`${urlBase}/conferences/1/volunteers`)
-        //const volunteers = await response.json()
+        const response = await fetch(`${urlBase}/committee`);
+        const members = await response.json();
 
-        body: `name=${txtName}` +
-                    `&email=${txtEmail}` +
-                    `&institution=${txtInstitution}` +
-                    `&office=${txtOffice}` +
-                    `&photo=${txtPhoto}` +
-                    `&facebook=${txtFacebook}` +
-                    `&twitter=${txtTwitter}` +
-                    `&linkedin=${txtLinkedin}` +
-                    `&bio=${txtBio}` +
-                    `&active=1`
-
-
-        const members = [
-            {
-                'id': 1,
-                'name': 'Um Membro',
-                'email': 'teste@teste.com',
-                'institution': 'Uma Universidade',
-                'office': 'Coordenador dos Cursos de Agricultura',
-                'photo': 'https://url.da.foto.com',
-                'facebook': 'https://pagina.do.facebook.com/1',
-                'twitter': 'https://pagina.do.twitter.com/1',
-                'linkedin': 'https://pagina.do.linkedin.com/1',
-                'bio': 'A minha história',
-            },
-            {
-                'id': 2,
-                'name': 'Outro Membro',
-                'email': 'teste@teste.com',
-                'institution': 'Outra Universidade',
-                'office': 'Coordenador dos Cursos de Física',
-                'photo': 'https://url.da.foto.com/2',
-                'facebook': 'https://pagina.do.facebook.com/2',
-                'twitter': 'https://pagina.do.twitter.com/2',
-                'linkedin': 'https://pagina.do.linkedin.com/2',
-                'bio': 'A minha outra história',
-            },
-        ]
-        let i = 1
+        let i = 1;
         for (const member of members) {
             strHtml += `
                 <tr>
                     <td>${i}</td>
-                    <td>${member.name}</td>
+                    <td>${member.nome}</td>
                     <td>${member.email}</td>
-                    <td>${member.institution}</td>
-                    <td>${member.office}</td>
+                    <td>${member.instituicao}</td>
+                    <td>${member.cargo}</td>
                     <td class="text-right">
-                        <i id='${member.id}' class='fas fa-edit edit'></i>
-                        <i id='${member.id}' class='fas fa-trash-alt remove'></i>
+                        <i id='edit-${member.idCommitteeMember}' idcommittemember='${member.idCommitteeMember}' class='fas fa-edit edit'></i>
+                        <i id='remove-${member.idCommitteeMember}' idcommittemember='${member.idCommitteeMember}' class='fas fa-trash-alt remove'></i>
                     </td>
                 </tr>
-            `
-            i++
+            `;
+            i++;
         }
-        strHtml += "</tbody>"
-        tblCommittee.innerHTML = strHtml
+        strHtml += "</tbody>";
+        tblCommittee.innerHTML = strHtml;
 
         // Gerir o clique no ícone de Editar        
-        const btnEdit = document.getElementsByClassName("edit")
+        const btnEdit = document.getElementsByClassName("edit");
         for (let i = 0; i < btnEdit.length; i++) {
-            btnEdit[i].addEventListener("click", () => {
-                isNew = false
+            btnEdit[i].addEventListener("click", function () {
+                let idCommitteeMember = this.getAttribute('idcommittemember');
+                isNew = false;
                 for (const member of members) {
-                    if (member.id == btnEdit[i].getAttribute("id")) {
-                        document.getElementById("txtCommitteeMemberId").value = member.id
-                        document.getElementById("txtName").value = member.name
-                        document.getElementById("txtEmail").value = member.email
-                        document.getElementById("txtInstitution").value = member.institution
-                        document.getElementById("txtOffice").value = member.office
-                        document.getElementById("txtPhoto").value = member.photo
-                        document.getElementById("txtFacebook").value = member.facebook
-                        document.getElementById("txtTwitter").value = member.twitter
-                        document.getElementById("txtLinkedin").value = member.linkedin
-                        document.getElementById("txtBio").value = member.bio
+                    if (member.idCommitteeMember == idCommitteeMember) {
+                        document.getElementById("txtCommitteeMemberId").value = member.idCommitteeMember;
+                        document.getElementById("txtNome").value = member.nome;
+                        document.getElementById("txtEmail").value = member.email;
+                        document.getElementById("txtInstituicao").value = member.instituicao;
+                        document.getElementById("txtCargo").value = member.cargo;
+                        document.getElementById("txtFoto").value = member.foto;
+                        document.getElementById("txtFacebook").value = member.facebook;
+                        document.getElementById("txtTwitter").value = member.twitter;
+                        document.getElementById("txtLinkedin").value = member.linkedin;
+                        document.getElementById("txtBio").value = member.bio;
                     }
                 }
             })
@@ -184,7 +162,7 @@ window.onload = () => {
         // Gerir o clique no ícone de Remover        
         const btnDelete = document.getElementsByClassName("remove")
         for (let i = 0; i < btnDelete.length; i++) {
-            btnDelete[i].addEventListener("click", () => {
+            btnDelete[i].addEventListener("click", function () {
                 Swal.fire({
                     title: 'Tem a certeza?',
                     text: "Não será possível reverter a remoção!",
@@ -196,26 +174,48 @@ window.onload = () => {
                     confirmButtonText: 'Remover'
                 }).then(async (result) => {
                     if (result.value) {
-                        let committeeMemberId = btnDelete[i].getAttribute("id")
+                        let idCommitteeMember = this.getAttribute('idcommittemember');
                         try {
-                            const response = await fetch(`${urlBase}/conferences/1/committee/${committeeMemberId}`, {
+                            const response = await fetch(`${urlBase}/committee/${idCommitteeMember}`, {
                                 method: "DELETE"
-                            })
-                            if (response.status == 204) {
-                                swal('Removido!', 'O membro do comité científico foi removido da Conferência.', 'success')
+                            });
+                            const result = await response.json();
+
+                            if (result.success == true) {
+                                Swal.fire({
+                                    title: 'Removido!',
+                                    text: result.message.pt,
+                                    icon: 'success',
+                                    showCancelButton: false,
+                                    confirmButtonColor: '#3085d6',
+                                    confirmButtonText: 'Fechar'
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Erro!',
+                                    text: result.message.pt,
+                                    icon: 'error',
+                                    showCancelButton: false,
+                                    confirmButtonColor: '#3085d6',
+                                    confirmButtonText: 'Fechar'
+                                });
                             }
                         } catch (err) {
-                            swal({
-                                type: 'error',
+                            Swal.fire({
+                                icon: 'error',
                                 title: 'Erro',
-                                text: err
-                            })
+                                text: err,
+                                showCancelButton: false,
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'Fechar'
+
+                            });
                         }
-                        renderCommittee()
+                        renderCommittee();
                     }
                 })
             })
         }
     }
-    renderCommittee()
+    renderCommittee();
 }

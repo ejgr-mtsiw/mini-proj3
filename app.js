@@ -30,13 +30,14 @@ app.use(passport.session());
 
 require('./config/passport/passport.js')(passport, models.User);
 
-var indexRouter = require('./routes/index.routes');
-var authRouter = require('./routes/auth.routes')(passport);
-var usersRouter = require('./routes/users.routes');
-var conferencesRouter = require('./routes/conferences.routes');
-var speakersRouter = require('./routes/speakers.routes');
-var sponsorsRouter = require('./routes/sponsors.routes');
-var volunteersRouter = require('./routes/volunteers.routes');
+const indexRouter = require('./routes/index.routes');
+const authRouter = require('./routes/auth.routes')(passport);
+const usersRouter = require('./routes/users.routes');
+const conferencesRouter = require('./routes/conferences.routes');
+const speakersRouter = require('./routes/speakers.routes');
+const sponsorsRouter = require('./routes/sponsors.routes');
+const volunteersRouter = require('./routes/volunteers.routes');
+const committeeRouter = require('./routes/committemembers.routes');
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -47,6 +48,7 @@ app.use('/conferences', conferencesRouter);
 app.use('/speakers', speakersRouter);
 app.use('/sponsors', sponsorsRouter);
 app.use('/volunteers', volunteersRouter);
+app.use('/committee', committeeRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
