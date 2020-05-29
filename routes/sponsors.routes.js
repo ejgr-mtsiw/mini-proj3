@@ -17,11 +17,11 @@ router.post('/', sponsorController.addNewSponsor);
 /**
  * Update a sponsor
  */
-router.put('/:id', sponsorController.updateSponsor);
+router.put('/:idSponsor', sponsorController.updateSponsor);
 
 /**
  * Remove a sponsor from the database
  */
-router.delete('/:id', sponsorController.deleteSponsor);
+router.delete('/:idSponsor', sponsorController.deleteSponsor);
 
 module.exports = router;

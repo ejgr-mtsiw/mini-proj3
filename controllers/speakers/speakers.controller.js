@@ -135,11 +135,11 @@ exports.updateSpeaker = [
  * Remove a speaker from the database
  */
 exports.deleteSpeaker = (req, res) => {
-    let id = req.params.id;
+    let idSpeaker = req.params.idSpeaker;
 
     models.Speaker.destroy({
         where: {
-            idSpeaker: id
+            idSpeaker: idSpeaker
         }
     }).then(function (item) {
         res.status(messages.db.successDelete.status)

@@ -21,11 +21,11 @@ router.post('/', speakerController.addNewSpeaker);
 /**
  * Update a speaker
  */
-router.put('/:id', speakerController.updateSpeaker);
+router.put('/:idSpeaker', speakerController.updateSpeaker);
 
 /**
  * Remove a speaker from the database
  */
-router.delete('/:id', speakerController.deleteSpeaker);
+router.delete('/:idSpeaker', speakerController.deleteSpeaker);
 
 module.exports = router;

@@ -110,11 +110,11 @@ exports.updateSponsor = [
  * Remove a sponsor from the database
  */
 exports.deleteSponsor = (req, res) => {
-    let id = req.params.id;
+    let idSponsor = req.params.idSponsor;
 
     models.Sponsor.destroy({
         where: {
-            idSponsor: id
+            idSponsor: idSponsor
         }
     }).then(function (item) {
         res.status(messages.db.successDelete.status)
