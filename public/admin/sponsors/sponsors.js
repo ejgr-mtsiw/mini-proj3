@@ -101,8 +101,8 @@ window.onload = () => {
                     <td>${sponsor.nome}</td>
                     <td>${sponsor.categoria}</td>
                     <td class="text-right">
-                        <i id='edit-${sponsor.idSponsor}' idsponsor='${sponsor.idSponsor}' class='fas fa-edit edit'></i>
-                        <i id='remove-${sponsor.idSponsor}' idsponsor='${sponsor.idSponsor}' class='fas fa-trash-alt remove'></i>
+                        <i id='edit-${sponsor.idSponsor}' idsponsor='${sponsor.idSponsor}' class='fas fa-edit edit as-button'></i>
+                        <i id='remove-${sponsor.idSponsor}' idsponsor='${sponsor.idSponsor}' class='fas fa-trash-alt remove as-button'></i>
                     </td>
                 </tr>
             `;

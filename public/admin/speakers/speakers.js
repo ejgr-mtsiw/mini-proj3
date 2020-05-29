@@ -104,8 +104,8 @@ window.onload = () => {
                     <td>${speaker.nome}</td>
                     <td>${speaker.cargo}</td>
                     <td class="text-right">
-                        <i id='edit-${speaker.idSpeaker}' idspeaker='${speaker.idSpeaker}' class='fas fa-edit edit'></i>
-                        <i id='remove-${speaker.idSpeaker}' idspeaker='${speaker.idSpeaker}' class='fas fa-trash-alt remove'></i>
+                        <i id='edit-${speaker.idSpeaker}' idspeaker='${speaker.idSpeaker}' class='fas fa-edit edit as-button'></i>
+                        <i id='remove-${speaker.idSpeaker}' idspeaker='${speaker.idSpeaker}' class='fas fa-trash-alt remove as-button'></i>
                     </td>
                 </tr>
             `

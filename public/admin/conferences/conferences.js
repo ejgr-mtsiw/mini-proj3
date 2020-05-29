@@ -147,8 +147,8 @@ window.onload = () => {
                     <td>${conference.local}</td>
                     <td>${conference.data}</td>
                     <td class="text-right">
-                        <i id='edit-conference-${conference.idConference}' idconference='${conference.idConference}' class='fas fa-edit edit-conference'></i>
-                        <i id='remove-conference-${conference.idConference}' idconference='${conference.idConference}' class='fas fa-trash-alt remove-conference'></i>
+                        <i id='edit-conference-${conference.idConference}' idconference='${conference.idConference}' class='fas fa-edit edit-conference as-button'></i>
+                        <i id='remove-conference-${conference.idConference}' idconference='${conference.idConference}' class='fas fa-trash-alt remove-conference as-button'></i>
                     </td>
                 </tr>
             `;
@@ -500,7 +500,7 @@ window.onload = () => {
                 <th>Fim</th>`;
 
         for (const volunteer of volunteers) {
-            strHtml += `<th>${volunteer.nome}</th>`;
+            strHtml += `<th class="col-1">${volunteer.nome}</th>`;
         }
 
         strHtml += "</tr></thead><tbody>";
@@ -528,7 +528,7 @@ window.onload = () => {
                     }
                 }
 
-                strHtml += `<td><input type="checkbox"` +
+                strHtml += `<td class="text-center"><input type="checkbox"` +
                     ` id="task-${task.idTask}-${volunteer.idVolunteer}"` +
                     ` idtask="${task.idTask}" idvolunteer="${volunteer.idVolunteer}"` +
                     ` ${checked} class="volunteer-does-task" ></td>`;
@@ -712,7 +712,7 @@ window.onload = () => {
                     <td>${participant.nomeParticipante}</td>
                     <td>${participant.idParticipant}</td>
                     <td class="text-right">
-                    <i id='remove-participant-${participant.idParticipant}' idparticipant='${participant.idParticipant}' class='fas fa-trash-alt remove-participant'></i>
+                    <i id='remove-participant-${participant.idParticipant}' idparticipant='${participant.idParticipant}' class='fas fa-trash-alt remove-participant as-button'></i>
                     </td>
                 </tr>
             `;

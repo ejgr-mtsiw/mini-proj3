@@ -103,8 +103,8 @@ window.onload = () => {
                     <td>${volunteer.email}</td>
                     <td>${volunteer.telefone}</td>
                     <td class="text-right">
-                        <i id='edit-${volunteer.idVolunteer}' idvolunteer='${volunteer.idVolunteer}' class='fas fa-edit edit'></i>
-                        <i id='remove-${volunteer.idVolunteer}' idvolunteer='${volunteer.idVolunteer}' class='fas fa-trash-alt remove'></i>
+                        <i id='edit-${volunteer.idVolunteer}' idvolunteer='${volunteer.idVolunteer}' class='fas fa-edit edit as-button'></i>
+                        <i id='remove-${volunteer.idVolunteer}' idvolunteer='${volunteer.idVolunteer}' class='fas fa-trash-alt remove as-button'></i>
                     </td>
                 </tr>
             `;
