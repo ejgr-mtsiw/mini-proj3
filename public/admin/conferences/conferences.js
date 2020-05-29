@@ -128,8 +128,8 @@ window.onload = () => {
                     <td>${conference.local}</td>
                     <td>${conference.data}</td>
                     <td class="text-right">
-                        <i id='edit-${conference.idConference}' idconference='${conference.idConference}' class='fas fa-edit edit-conference'></i>
-                        <i id='remove-${conference.idConference}' idconference='${conference.idConference}' class='fas fa-trash-alt remove-conference'></i>
+                        <i id='edit-conference-${conference.idConference}' idconference='${conference.idConference}' class='fas fa-edit edit-conference'></i>
+                        <i id='remove-conference-${conference.idConference}' idconference='${conference.idConference}' class='fas fa-trash-alt remove-conference'></i>
                     </td>
                 </tr>
             `;
@@ -153,9 +153,9 @@ window.onload = () => {
                         document.getElementById("txtLocal").value = conference.local
                         document.getElementById("txtData").value = conference.data
 
-                        renderSpeakers(idConference);
-                        renderSponsors(idConference);
-                        renderParticipants(idConference);
+                        renderSpeakers(idConference, conference.nome);
+                        renderSponsors(idConference, conference.nome);
+                        renderParticipants(idConference, conference.nome);
                     }
                 }
             });
@@ -222,10 +222,10 @@ window.onload = () => {
         }
     }
 
-    const renderSpeakers = async function (idConference) {
+    const renderSpeakers = async function (idConference, conferenceName) {
         let strHtml = `
             <thead >
-                <tr><th class='w-100 text-center bg-warning' colspan='4'>Lista de Oradores</th></tr>
+                <tr><th class='w-100 text-center bg-warning' colspan='4'>Lista de Oradores da Conferência ${conferenceName}</th></tr>
                 <tr class='bg-info'>
                     <th>#</th>
                     <th>Nome</th>
@@ -234,7 +234,7 @@ window.onload = () => {
                 </tr> 
             </thead><tbody>
         `;
-        const response = await fetch(`${urlBase}/conferences/${idConference}/speakers`);
+        const response = await fetch(`${urlBase}/speakers/conference/${idConference}`);
         const speakers = await response.json();
         let i = 1;
         for (const speaker of speakers) {
@@ -300,10 +300,10 @@ window.onload = () => {
         }
     }
 
-    const renderSponsors = async function (idConference) {
+    const renderSponsors = async function (idConference, conferenceName) {
         let strHtml = `
             <thead >
-                <tr><th class='w-100 text-center bg-warning' colspan='4'>Lista de Sponsors</th></tr>
+                <tr><th class='w-100 text-center bg-warning' colspan='4'>Lista de Sponsors da Conferência ${conferenceName}</th></tr>
                 <tr class='bg-info'>
                     <th>#</th>
                     <th>Nome</th>
@@ -312,7 +312,7 @@ window.onload = () => {
                 </tr> 
             </thead><tbody>
         `;
-        const response = await fetch(`${urlBase}/conferences/${idConference}/sponsors`);
+        const response = await fetch(`${urlBase}/sponsors/conference/${idConference}`);
         const sponsors = await response.json();
         let i = 1;
         for (const sponsor of sponsors) {
@@ -378,10 +378,10 @@ window.onload = () => {
         }
     }
 
-    const renderParticipants = async (idConference) => {
+    const renderParticipants = async (idConference, conferenceName) => {
         let strHtml = `
             <thead >
-                <tr><th class='w-100 text-center bg-warning' colspan='4'>Lista de Participantes</th></tr>
+                <tr><th class='w-100 text-center bg-warning' colspan='4'>Lista de Participantes da Conferência ${conferenceName}</th></tr>
                 <tr class='bg-info'>
                     <th>#</th>
                     <th>Nome</th>
@@ -400,7 +400,7 @@ window.onload = () => {
                     <td>${participant.nomeParticipante}</td>
                     <td>${participant.idParticipant}</td>
                     <td class="text-right">
-                    <i id='remove-${participant.idParticipant}' idparticipant='${participant.idParticipant}' class='fas fa-trash-alt remove-participant'></i>
+                    <i id='remove-participant-${participant.idParticipant}' idparticipant='${participant.idParticipant}' class='fas fa-trash-alt remove-participant'></i>
                     </td>
                 </tr>
             `;
@@ -409,7 +409,7 @@ window.onload = () => {
         strHtml += "</tbody>";
         tblParticipants.innerHTML = strHtml;
 
-        // Show sponsors tab link
+        // Show participants tab link
         tabParticipants.classList.add('visible');
         tabParticipants.classList.remove('invisible');
 
@@ -458,7 +458,7 @@ window.onload = () => {
                                 confirmButtonText: 'Fechar'
                             });
                         }
-                        renderParticipants();
+                        renderParticipants(idConference, conferenceName);
                     }
                 });
             });
