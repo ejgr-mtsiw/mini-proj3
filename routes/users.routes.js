@@ -1,14 +1,9 @@
-var models = require('../models');
 var express = require('express');
 var router = express.Router();
 
-/* GET users listing. */
-router.get('/', (req, res, next) => {
+const userController = require('../controllers/users/users.controller');
 
-    models.User.findAll()
-        .then((users) => {
-            res.send(users);
-        });
-});
+/* GET users listing. */
+router.get('/', userController.getAllUsers);
 
 module.exports = router;
