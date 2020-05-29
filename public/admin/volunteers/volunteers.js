@@ -1,61 +1,85 @@
-const urlBase = "https://mtsiw.duckdns.org/pwa"
-let isNew = true
+const urlBase = "https://mtsiw.duckdns.org/pwa";
+let isNew = true;
 
 window.onload = () => {
     // References to HTML objects   
-    const tblVolunteers = document.getElementById("tblVolunteers")
-    const frmVolunteer = document.getElementById("frmVolunteer")
+    const tblVolunteers = document.getElementById("tblVolunteers");
+    const frmVolunteer = document.getElementById("frmVolunteer");
 
+    frmVolunteer.addEventListener("reset", (event) => {
+        isNew = true;
+    });
 
     frmVolunteer.addEventListener("submit", async (event) => {
-        event.preventDefault()
-        const txtName = document.getElementById("txtName").value
-        const txtEmail = document.getElementById("txtEmail").value
-        const txttelefone = document.getElementById("txttelefone").value
-        const txtVolunteerId = document.getElementById("txtVolunteerId").value
+        event.preventDefault();
+        const txtName = document.getElementById("txtName").value;
+        const txtEmail = document.getElementById("txtEmail").value;
+        const txtTelefone = document.getElementById("txtTelefone").value;
+        const txtVolunteerId = document.getElementById("txtVolunteerId").value;
 
-        // Verifica flag isNew para saber se se trata de uma adição ou de um atualização dos dados de um orador
-        let response
-        if (isNew) {
-            // Adiciona Voluntário
-            response = await fetch(`${urlBase}/volunteers`, {
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                method: "POST",
-                body: `nome=${txtName}&email=${txtEmail}&telefone=${txttelefone}&active=1`
-            })
-            const newVolunteerId = response.headers.get("Location")
-            const newVolunteer = await response.json()
+        // Verifica flag isNew para saber se se trata de uma adição ou
+        // de atualização dos dados de um voluntário
+        let response;
+        try {
+            let msgBody = `idVolunteer=${txtVolunteerId}&nome=${txtName}&email=${txtEmail}&telefone=${txtTelefone}`;
+            if (isNew) {
+                // Adiciona Voluntário
+                response = await fetch(`${urlBase}/volunteers`, {
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    method: "POST",
+                    body: msgBody
+                });
+            } else {
+                // Atualiza Voluntário
+                response = await fetch(`${urlBase}/volunteers/${txtVolunteerId}`, {
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    method: "PUT",
+                    body: msgBody
+                });
+            }
+            let result = await response.json();
 
-            // Associa voluntário à conferência WebConfernce
-            const newUrl = `${urlBase}/conferences/1/volunteers/${newVolunteerId}`
-            const response2 = await fetch(newUrl, {
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                method: "POST"
-            })
-            const newVolunteer2 = await response2.json()
-        } else {
-            // Atualiza Voluntário
-            response = await fetch(`${urlBase}/volunteers/${txtVolunteerId}`, {
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                method: "PUT",
-                body: `nome=${txtName}&email=${txtEmail}&telefone=${txttelefone}&active=1`
-            })
+            if (result.success == true) {
+                frmVolunteer.reset();
 
-            const newVolunteer = await response.json()
+                Swal.fire({
+                    title: 'Sucesso',
+                    text: result.message.pt,
+                    icon: 'success',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Fechar'
+                });
+            } else {
+                Swal.fire({
+                    title: 'Erro!',
+                    text: result.message.pt,
+                    icon: 'error',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Fechar'
+                });
+            }
+        } catch (err) {
+            Swal.fire({
+                title: 'Erro!',
+                text: err,
+                icon: 'error',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Fechar'
+            });
         }
-        isNew = true
-        renderVolunteers()
+
+        renderVolunteers();
     })
 
-
     const renderVolunteers = async () => {
-        frmVolunteer.reset()
+        frmVolunteer.reset();
         let strHtml = `
             <thead >
                 <tr><th class='w-100 text-center bg-warning' colspan='5'>Lista de Voluntários</th></tr>
@@ -67,24 +91,10 @@ window.onload = () => {
                     <th class="text-right">Ações</th>              
                 </tr> 
             </thead><tbody>
-        `
-        const response = await fetch(`${urlBase}/conferences/1/volunteers`)
-        const volunteers = await response.json()
-        // const volunteers = [
-        //     {
-        //         'id': 1,
-        //         'nome': 'Um Voluntário',
-        //         'email': 'teste@teste.com',
-        //         'telefone': '123 123 123'
-        //     },
-        //     {
-        //         'id': 2,
-        //         'nome': 'Outro Voluntário',
-        //         'email': 'teste2@teste.com',
-        //         'telefone': '321 312 312'
-        //     },
-        // ]
-        let i = 1
+        `;
+        const response = await fetch(`${urlBase}/volunteers`);
+        const volunteers = await response.json();
+        let i = 1;
         for (const volunteer of volunteers) {
             strHtml += `
                 <tr>
@@ -93,34 +103,35 @@ window.onload = () => {
                     <td>${volunteer.email}</td>
                     <td>${volunteer.telefone}</td>
                     <td class="text-right">
-                        <i id='${volunteer.idVolunteer}' class='fas fa-edit edit'></i>
-                        <i id='${volunteer.idVolunteer}' class='fas fa-trash-alt remove'></i>
+                        <i id='edit-${volunteer.idVolunteer}' idvolunteer='${volunteer.idVolunteer}' class='fas fa-edit edit'></i>
+                        <i id='remove-${volunteer.idVolunteer}' idvolunteer='${volunteer.idVolunteer}' class='fas fa-trash-alt remove'></i>
                     </td>
                 </tr>
-            `
-            i++
+            `;
+            i++;
         }
-        strHtml += "</tbody>"
-        tblVolunteers.innerHTML = strHtml
+        strHtml += "</tbody>";
+        tblVolunteers.innerHTML = strHtml;
 
         // Gerir o clique no ícone de Editar        
-        const btnEdit = document.getElementsByClassName("edit")
+        const btnEdit = document.getElementsByClassName("edit");
         for (let i = 0; i < btnEdit.length; i++) {
-            btnEdit[i].addEventListener("click", () => {
-                isNew = false
+            btnEdit[i].addEventListener("click", function () {
+                let idVolunteer = this.getAttribute('idvolunteer');
+                isNew = false;
                 for (const volunteer of volunteers) {
-                    if (volunteer.id == btnEdit[i].getAttribute("id")) {
-                        document.getElementById("txtVolunteerId").value = volunteer.id
-                        document.getElementById("txtName").value = volunteer.nome
-                        document.getElementById("txtEmail").value = volunteer.email
-                        document.getElementById("txttelefone").value = volunteer.telefone
+                    if (volunteer.idVolunteer == idVolunteer) {
+                        document.getElementById("txtVolunteerId").value = volunteer.idVolunteer;
+                        document.getElementById("txtName").value = volunteer.nome;
+                        document.getElementById("txtEmail").value = volunteer.email;
+                        document.getElementById("txtTelefone").value = volunteer.telefone;
                     }
                 }
             })
         }
 
         // Gerir o clique no ícone de Remover        
-        const btnDelete = document.getElementsByClassName("remove")
+        const btnDelete = document.getElementsByClassName("remove");
         for (let i = 0; i < btnDelete.length; i++) {
             btnDelete[i].addEventListener("click", () => {
                 Swal.fire({
@@ -134,26 +145,49 @@ window.onload = () => {
                     confirmButtonText: 'Remover'
                 }).then(async (result) => {
                     if (result.value) {
-                        let volunteerId = btnDelete[i].getAttribute("id")
+                        let volunteerId = btnDelete[i].getAttribute("idvolunteer")
                         try {
-                            const response = await fetch(`${urlBase}/conferences/1/volunteers/${volunteerId}`, {
+                            const response = await fetch(`${urlBase}/volunteers/${volunteerId}`, {
                                 method: "DELETE"
-                            })
-                            if (response.status == 204) {
-                                swal('Removido!', 'O voluntário foi removido da Conferência.', 'success')
+                            });
+
+                            const result = await response.json();
+
+                            if (result.success == true) {
+                                Swal.fire({
+                                    title: 'Removido!',
+                                    text: result.message.pt,
+                                    icon: 'success',
+                                    showCancelButton: false,
+                                    confirmButtonColor: '#3085d6',
+                                    confirmButtonText: 'Fechar'
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Erro!',
+                                    text: result.message.pt,
+                                    icon: 'error',
+                                    showCancelButton: false,
+                                    confirmButtonColor: '#3085d6',
+                                    confirmButtonText: 'Fechar'
+                                });
                             }
                         } catch (err) {
-                            swal({
-                                type: 'error',
+                            Swal.fire({
+                                icon: 'error',
                                 title: 'Erro',
-                                text: err
-                            })
+                                text: err,
+                                showCancelButton: false,
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'Fechar'
+
+                            });
                         }
-                        renderVolunteers()
+                        renderVolunteers();
                     }
                 })
             })
         }
     }
-    renderVolunteers()
+    renderVolunteers();
 }
