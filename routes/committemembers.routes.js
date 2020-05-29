@@ -9,6 +9,11 @@ const committeeMemberController = require('../controllers/committemembers/commit
 router.get('/', committeeMemberController.getAllCommitteeMembers);
 
 /**
+ * Get all committee members (admin) tagging the current conference
+ */
+router.get('/conference/:idConference/', committeeMemberController.getAllCommitteeMembersWithConference);
+
+/**
  * Add a new committee members to the database
  */
 router.post('/', committeeMemberController.addNewCommitteeMember);

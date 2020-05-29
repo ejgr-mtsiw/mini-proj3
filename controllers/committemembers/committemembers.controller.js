@@ -18,6 +18,37 @@ exports.getAllCommitteeMembers = (req, res) => {
 };
 
 /**
+ * Get all committee members (admin) tagging the current conference
+ */
+exports.getAllCommitteeMembersWithConference = (req, res) => {
+
+    models.CommitteeMember.findAll().then((members) => {
+
+        //TODO: Remove when using SQL
+        // The next steps are necessary to simulate a relation between
+        // the tables, as they are just JSON files for now
+
+        return models.ConferenceCommittee.findAll().then((committees) => {
+            for (let i = 0; i < members.length; i++) {
+                members[i].dataValues.conferences = [];
+                for (let j = 0; j < committees.length; j++) {
+                    if (Number(committees[j].idConference) === Number(req.params.idConference) &&
+                        Number(committees[j].idCommitteeMember) === Number(members[i].idCommitteeMember)) {
+
+                        members[i].dataValues.conferences = [{
+                            idConference: req.params.idConference
+                        }];
+                        break;
+                    }
+                }
+            }
+
+            return res.send(members);
+        });
+    });
+};
+
+/**
  * Add a new committee member
  */
 exports.addNewCommitteeMember = [

@@ -412,3 +412,116 @@ exports.removeParticipantFromConference = [
         });
     }
 ];
+
+/**
+ * Get committee members for some conference
+ */
+exports.getConferenceCommittee = [
+
+    validator.idConferenceParam,
+
+    (req, res) => {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(messages.db.requiredData.status)
+                .send(messages.db.requiredData);
+        }
+
+        models.CommitteeMember.findAll({
+            include: {
+                as: 'conferences',
+                model: models.ConferenceCommittee,
+                required: true
+            },
+            where: {
+                '$conferences.idConference$': req.params.idConference
+            }
+        }).then(function (members) {
+
+            //TODO: Remove when using SQL
+            // The next steps are necessary to simulate a relation between
+            // the tables, as they are just JSON files for now
+
+            return models.ConferenceCommittee.findAll().then((committees) => {
+                for (let i = 0; i < members.length; i++) {
+                    members[i].dataValues.conferences = [];
+                    for (let j = 0; j < committees.length; j++) {
+                        if (Number(committees[j].idConference) === Number(req.params.idConference) &&
+                            Number(committees[j].idCommitteeMember) === Number(members[i].idCommitteeMember)) {
+
+                            members[i].dataValues.conferences = [{
+                                idConference: req.params.idConference
+                            }];
+                            break;
+                        }
+                    }
+                }
+
+                return res.send(members);
+            });
+        });
+    }
+];
+
+/**
+ * Adds committee member to conference
+ */
+exports.addCommitteeMemberToConference = [
+
+    validator.idConferenceParam,
+    validator.idCommitteeMemberParam,
+
+    (req, res) => {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(messages.db.requiredData.status)
+                .send(messages.db.requiredData);
+        }
+
+        models.ConferenceCommittee.create({
+            idConference: req.params.idConference,
+            idCommitteeMember: req.params.idCommitteeMember
+        }).then(function (item) {
+            return res.status(messages.db.successInsert.status)
+                .send(messages.db.successInsert);
+        }).catch(function (err) {
+            console.log(err);
+            return res.status(messages.db.dbError.status)
+                .send(messages.db.dbError);
+        });
+    }
+];
+
+/**
+ * Removes a committee member from a conference
+ */
+exports.removeCommitteeMemberFromConference = [
+
+    validator.idConferenceParam,
+    validator.idCommitteeMemberParam,
+
+    (req, res) => {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(messages.db.requiredData.status)
+                .send(messages.db.requiredData);
+        }
+
+        models.ConferenceCommittee.destroy({
+            where: {
+                idConference: req.params.idConference,
+                idCommitteeMember: req.params.idCommitteeMember
+            }
+        }).then(function (item) {
+            return res.status(messages.db.successDelete.status)
+                .send(messages.db.successDelete);
+        }).catch(function (err) {
+            console.log(err);
+            return res.status(messages.db.dbError.status)
+                .send(messages.db.dbError);
+        });
+    }
+];

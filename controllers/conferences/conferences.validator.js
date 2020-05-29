@@ -12,5 +12,6 @@ module.exports = {
     email: body('email').notEmpty().isEmail().normalizeEmail(),
     idSpeakerParam: param('idSpeaker').notEmpty().isNumeric(),
     idSponsorParam: param('idSponsor').notEmpty().isNumeric(),
+    idCommitteeMemberParam: param('idCommitteeMember').notEmpty().isNumeric(),
     emailParam: param('email').notEmpty().isEmail().normalizeEmail()
 };

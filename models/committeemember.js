@@ -31,14 +31,11 @@ module.exports = function (sequelize, DataTypes) {
     );
 
     CommitteeMember.sync = function (options) {
-        console.info('CommitteeMember.sync');
+
         return Promise.resolve(0);
     };
 
     CommitteeMember.init = function (attributes, options = {}) {
-        console.info('CommitteeMember.init');
-
-        console.info(this);
 
         options = Object.assign({}, this.options, options);
         options.hooks = options.hooks === undefined ? true : !!options.hooks;
@@ -50,10 +47,9 @@ module.exports = function (sequelize, DataTypes) {
      * @returns {Promise<Array<Model>>}
      */
     CommitteeMember.findAll = (options) => {
+
         let membersList = [];
         const members = require(dataFile);
-
-        console.info('CommitteeMember.findAll');
 
         members.forEach(element => {
             membersList.push(CommitteeMember.build(element));
@@ -63,8 +59,6 @@ module.exports = function (sequelize, DataTypes) {
     };
 
     CommitteeMember.build = (values, options) => {
-
-        console.info('CommitteeMember.build');
 
         let v = new CommitteeMember(values, options);
         v.save = CommitteeMember.save;
@@ -77,8 +71,6 @@ module.exports = function (sequelize, DataTypes) {
         const members = require(dataFile);
 
         if (this.isNewRecord) {
-            console.log('CommitteeMember.save INSERT');
-
             this.set({
                 'idCommitteeMember': CommitteeMember.calculateNewId(members)
             });
@@ -88,8 +80,6 @@ module.exports = function (sequelize, DataTypes) {
 
             CommitteeMember.writeFile(members);
         } else {
-            console.log('CommitteeMember.save UPDATE');
-
             let idCommitteeMember = options.where.idCommitteeMember || 0;
 
             if (idCommitteeMember == 0) {
@@ -101,9 +91,7 @@ module.exports = function (sequelize, DataTypes) {
                 let member = members[i];
                 if (Number(member.idCommitteeMember) === Number(idCommitteeMember)) {
                     exists = true;
-                    console.log(members);
                     members[i] = this.get();
-                    console.log(members);
                     CommitteeMember.writeFile(members);
                     break;
                 }
@@ -118,7 +106,6 @@ module.exports = function (sequelize, DataTypes) {
     };
 
     CommitteeMember.update = function (values, options) {
-        console.log('CommitteeMember.update');
 
         let v = CommitteeMember.build(values, options);
         v.isNewRecord = false;
@@ -128,7 +115,6 @@ module.exports = function (sequelize, DataTypes) {
     };
 
     CommitteeMember.destroy = (options) => {
-        console.log('CommitteeMember.destroy');
 
         const members = require(dataFile);
 
@@ -153,7 +139,6 @@ module.exports = function (sequelize, DataTypes) {
     CommitteeMember.writeFile = (data) => {
         fs.writeFile(dataFile, JSON.stringify(data), (err) => {
             if (err) throw err;
-            console.log('The file has been saved!');
         });
     };
 

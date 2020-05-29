@@ -6,11 +6,13 @@ window.onload = () => {
     const tblConferences = document.getElementById("tblConferences");
     const tblSpeakers = document.getElementById("tblSpeakers");
     const tblSponsors = document.getElementById("tblSponsors");
+    const tblCommittee = document.getElementById("tblCommittee");
     const tblParticipants = document.getElementById("tblParticipants");
 
     const tabConference = document.getElementById("nav-conference-tab");
     const tabSpeakers = document.getElementById("nav-speakers-tab");
     const tabSponsors = document.getElementById("nav-sponsors-tab");
+    const tabCommittee = document.getElementById("nav-committee-tab");
     const tabParticipants = document.getElementById("nav-participants-tab");
 
     const frmConference = document.getElementById("frmConference");
@@ -25,6 +27,10 @@ window.onload = () => {
         // Hide sponsors tab link
         tabSponsors.classList.add('invisible');
         tabSponsors.classList.remove('visible');
+
+        // Hide committee tab link
+        tabCommittee.classList.add('invisible');
+        tabCommittee.classList.remove('visible');
 
         // Hide participants tab link
         tabParticipants.classList.add('invisible');
@@ -155,6 +161,7 @@ window.onload = () => {
 
                         renderSpeakers(idConference, conference.nome);
                         renderSponsors(idConference, conference.nome);
+                        renderCommittee(idConference, conference.nome);
                         renderParticipants(idConference, conference.nome);
                     }
                 }
@@ -298,7 +305,7 @@ window.onload = () => {
                 }
             });
         }
-    }
+    };
 
     const renderSponsors = async function (idConference, conferenceName) {
         let strHtml = `
@@ -376,7 +383,87 @@ window.onload = () => {
                 }
             });
         }
-    }
+    };
+
+    const renderCommittee = async function (idConference, conferenceName) {
+        let strHtml = `
+            <thead >
+                <tr><th class='w-100 text-center bg-warning' colspan='5'>Membros do Comité Científico da Conferência ${conferenceName}</th></tr>
+                <tr class='bg-info'>
+                    <th>#</th>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Instituição</th>
+                    <th class="text-right">Participa</th>              
+                </tr> 
+            </thead><tbody>
+        `;
+        const response = await fetch(`${urlBase}/committee/conference/${idConference}`);
+        const members = await response.json();
+        let i = 1;
+        for (const member of members) {
+            let checked = '';
+            if (member.conferences && member.conferences.length > 0) {
+                checked = 'checked="checked"';
+            }
+
+            strHtml += `
+                <tr>
+                    <td>${i}</td>
+                    <td>${member.nome}</td>
+                    <td>${member.email}</td>
+                    <td>${member.instituicao}</td>
+                    <td class="text-right">
+                        <input type="checkbox" id='committeemember-${member.idCommitteeMember}' idcommitteemember='${member.idCommitteeMember}' ${checked} class='member-goes'>
+                    </td>
+                </tr>
+            `;
+            i++;
+        }
+        strHtml += "</tbody>";
+        tblCommittee.innerHTML = strHtml;
+
+        // Show speakers tab link
+        tabCommittee.classList.add('visible');
+        tabCommittee.classList.remove('invisible');
+
+        // Gerir a participação do orador
+        const chkMemberGoes = document.getElementsByClassName("member-goes");
+        for (let i = 0; i < chkMemberGoes.length; i++) {
+            chkMemberGoes[i].addEventListener("click", function () {
+                let idCommitteeMember = this.getAttribute('idcommitteemember');
+
+                // Add / remove speaker from the conference
+                if (this.checked) {
+                    fetch(`${urlBase}/conferences/${idConference}/committee/${idCommitteeMember}`, {
+                        method: "PUT"
+                    }).catch((error) => {
+                        Swal.fire({
+                            title: 'Erro!',
+                            text: error,
+                            icon: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Fechar'
+                        });
+                    });
+                } else {
+                    fetch(`${urlBase}/conferences/${idConference}/committee/${idCommitteeMember}`, {
+                        method: "DELETE"
+                    }).catch((error) => {
+                        Swal.fire({
+                            title: 'Erro!',
+                            text: error,
+                            icon: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Fechar'
+                        });
+                    });
+                }
+            });
+        }
+    };
 
     const renderParticipants = async (idConference, conferenceName) => {
         let strHtml = `
@@ -463,7 +550,7 @@ window.onload = () => {
                 });
             });
         }
-    }
+    };
 
     frmConference.reset();
     renderConferences();

@@ -68,4 +68,19 @@ router.post('/:idConference/participants/:email?', conferenceController.addParti
  */
 router.delete('/:idConference/participants/:email', conferenceController.removeParticipantFromConference);
 
+/**
+ * Get committee members for some conference
+ */
+router.get('/:idConference/committee', conferenceController.getConferenceCommittee);
+
+/**
+ * Adds a committee member to conference
+ */
+router.put('/:idConference/committee/:idCommitteeMember', conferenceController.addCommitteeMemberToConference);
+
+/**
+ * Removes a committee member from a conference
+ */
+router.delete('/:idConference/committee/:idCommitteeMember', conferenceController.removeCommitteeMemberFromConference);
+
 module.exports = router;
