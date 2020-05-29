@@ -18,6 +18,29 @@ exports.getAllSponsors = (req, res) => {
 };
 
 /**
+ * Get all sponsors and tag the current conference
+ */
+exports.getSponsorsWithConference = (req, res) => {
+
+    //TODO: validate!
+    let idConference = req.params.idConference;
+
+    models.Sponsor.findAll({
+        include: {
+            as: 'conferences',
+            model: models.ConferenceSponsor,
+            where: {
+                'idConference': idConference
+            },
+            required: false
+        }
+    })
+        .then(function (sponsors) {
+            res.send(sponsors);
+        });
+};
+
+/**
  * Add a new sponsor
  */
 exports.addNewSponsor = [

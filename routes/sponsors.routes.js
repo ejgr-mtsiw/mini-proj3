@@ -8,6 +8,10 @@ const sponsorController = require('../controllers/sponsors/sponsors.controller')
  */
 router.get('/', sponsorController.getAllSponsors);
 
+/**
+ * Get all sponsors (admin) taggin the current conference
+ */
+router.get('/sponsors/conference/:idConference/', sponsorController.getSponsorsWithConference);
 
 /**
  * Add a new sponsor
