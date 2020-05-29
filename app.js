@@ -37,6 +37,7 @@ const conferencesRouter = require('./routes/conferences.routes');
 const speakersRouter = require('./routes/speakers.routes');
 const sponsorsRouter = require('./routes/sponsors.routes');
 const volunteersRouter = require('./routes/volunteers.routes');
+const tasksRouter = require('./routes/tasks.routes');
 const committeeRouter = require('./routes/committemembers.routes');
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -48,6 +49,7 @@ app.use('/conferences', conferencesRouter);
 app.use('/speakers', speakersRouter);
 app.use('/sponsors', sponsorsRouter);
 app.use('/volunteers', volunteersRouter);
+app.use('/tasks', tasksRouter);
 app.use('/committee', committeeRouter);
 
 // catch 404 and forward to error handler

@@ -83,4 +83,19 @@ router.put('/:idConference/committee/:idCommitteeMember', conferenceController.a
  */
 router.delete('/:idConference/committee/:idCommitteeMember', conferenceController.removeCommitteeMemberFromConference);
 
+/**
+ * Get tasks for some conference
+ */
+router.get('/:idConference/tasks', conferenceController.getConferenceTasks);
+
+/**
+ * Add a volunteer to this task
+ */
+router.put('/:idConference/tasks/:idTask/volunteers/:idVolunteer', conferenceController.addVolunteerToTask);
+
+/**
+ * Remove a volunteer from this task
+ */
+router.delete('/:idConference/tasks/:idTask/volunteers/:idVolunteer', conferenceController.removeVolunteerFromTask);
+
 module.exports = router;

@@ -25,15 +25,12 @@ module.exports = function (sequelize, DataTypes) {
     );
 
     Volunteer.sync = function (options) {
-        console.info('Volunteer.sync');
+
         return Promise.resolve(0);
     };
 
     Volunteer.init = function (attributes, options = {}) {
-        console.info('Volunteer.init');
-
-        console.info(this);
-
+        
         options = Object.assign({}, this.options, options);
         options.hooks = options.hooks === undefined ? true : !!options.hooks;
 
@@ -44,10 +41,9 @@ module.exports = function (sequelize, DataTypes) {
      * @returns {Promise<Array<Model>>}
      */
     Volunteer.findAll = (options) => {
+        
         let volunteerList = [];
         const volunteers = require(dataFile);
-
-        console.info('Volunteer.findAll');
 
         volunteers.forEach(element => {
             volunteerList.push(Volunteer.build(element));
@@ -57,8 +53,6 @@ module.exports = function (sequelize, DataTypes) {
     };
 
     Volunteer.build = (values, options) => {
-
-        console.info('Volunteer.build');
 
         let v = new Volunteer(values, options);
         v.save = Volunteer.save;
@@ -71,8 +65,6 @@ module.exports = function (sequelize, DataTypes) {
         const volunteers = require(dataFile);
 
         if (this.isNewRecord) {
-            console.log('Volunteer.save INSERT');
-
             this.set({
                 'idVolunteer': Volunteer.calculateNewId(volunteers)
             });
@@ -82,8 +74,6 @@ module.exports = function (sequelize, DataTypes) {
 
             Volunteer.writeFile(volunteers);
         } else {
-            console.log('Volunteer.save UPDATE');
-
             let idVolunteer = options.where.idVolunteer || 0;
 
             if (idVolunteer === 0) {
@@ -95,9 +85,7 @@ module.exports = function (sequelize, DataTypes) {
                 let volunteer = volunteers[i];
                 if (Number(volunteer.idVolunteer) === Number(idVolunteer)) {
                     exists = true;
-                    console.log(volunteers);
                     volunteers[i] = this.get();
-                    console.log(volunteers);
                     Volunteer.writeFile(volunteers);
                     break;
                 }
@@ -112,7 +100,6 @@ module.exports = function (sequelize, DataTypes) {
     };
 
     Volunteer.update = function (values, options) {
-        console.log('Volunteer.update');
 
         let v = Volunteer.build(values, options);
         v.isNewRecord = false;
@@ -122,8 +109,7 @@ module.exports = function (sequelize, DataTypes) {
     };
 
     Volunteer.destroy = (options) => {
-        console.log('Volunteer.destroy');
-
+        
         const volunteers = require(dataFile);
 
         let idVolunteer = options.where.idVolunteer || 0;
@@ -147,7 +133,6 @@ module.exports = function (sequelize, DataTypes) {
     Volunteer.writeFile = (data) => {
         fs.writeFile(dataFile, JSON.stringify(data), (err) => {
             if (err) throw err;
-            console.log('The file has been saved!');
         });
     };
 

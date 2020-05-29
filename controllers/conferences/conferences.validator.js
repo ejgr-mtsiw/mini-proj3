@@ -13,5 +13,7 @@ module.exports = {
     idSpeakerParam: param('idSpeaker').notEmpty().isNumeric(),
     idSponsorParam: param('idSponsor').notEmpty().isNumeric(),
     idCommitteeMemberParam: param('idCommitteeMember').notEmpty().isNumeric(),
+    idTaskParam: param('idTask').notEmpty().isNumeric(),
+    idVolunteerParam: param('idVolunteer').notEmpty().isNumeric(),
     emailParam: param('email').notEmpty().isEmail().normalizeEmail()
 };

@@ -56,7 +56,7 @@ exports.addNewConference = [
 ];
 
 /**
- * Update a volunteer
+ * Update a conference
  */
 exports.updateConference = [
 
@@ -518,6 +518,121 @@ exports.removeCommitteeMemberFromConference = [
         }).then(function (item) {
             return res.status(messages.db.successDelete.status)
                 .send(messages.db.successDelete);
+        }).catch(function (err) {
+            console.log(err);
+            return res.status(messages.db.dbError.status)
+                .send(messages.db.dbError);
+        });
+    }
+];
+
+/**
+ * Get tasks for some conference
+ */
+exports.getConferenceTasks = [
+
+    validator.idConferenceParam,
+
+    (req, res) => {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(messages.db.requiredData.status)
+                .send(messages.db.requiredData);
+        }
+
+        let idConference = req.params.idConference;
+
+        models.Task.findAll({
+            include: {
+                as: 'volunteers',
+                model: models.TaskVolunteer,
+                required: false
+            },
+            where: {
+                idConference: idConference
+            }
+        }).then(function (tasks) {
+
+            // TODO: Remove when using SQL
+            // The next steps are necessary to simulate a relation between
+            // the tables, as they are just JSON files for now
+
+            return models.TaskVolunteer.findAll().then((volunteers) => {
+                for (let i = 0; i < tasks.length; i++) {
+                    tasks[i].dataValues.volunteers = [];
+
+                    for (let j = 0; j < volunteers.length; j++) {
+                        if (Number(volunteers[j].idTask) === Number(tasks[i].idTask)) {
+                            tasks[i].dataValues.volunteers.push({
+                                idVolunteer: volunteers[j].idVolunteer
+                            });
+                        }
+                    }
+                }
+
+                return res.send(tasks);
+            });
+        });
+    }
+];
+
+/**
+ * Add a volunteer to this task
+ */
+exports.addVolunteerToTask = [
+
+    validator.idConferenceParam,
+    validator.idTaskParam,
+    validator.idVolunteerParam,
+
+    (req, res) => {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(messages.db.requiredData.status)
+                .send(messages.db.requiredData);
+        }
+
+        models.TaskVolunteer.create({
+            idTask: req.params.idTask,
+            idVolunteer: req.params.idVolunteer
+        }).then(function (item) {
+            return res.status(messages.db.successInsert.status)
+                .send(messages.db.successInsert);
+        }).catch(function (err) {
+            console.log(err);
+            return res.status(messages.db.dbError.status)
+                .send(messages.db.dbError);
+        });
+    }
+];
+
+/**
+ * Remove a volunteer from this task
+ */
+exports.removeVolunteerFromTask = [
+
+    validator.idConferenceParam,
+    validator.idTaskParam,
+    validator.idVolunteerParam,
+
+    (req, res) => {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(messages.db.requiredData.status)
+                .send(messages.db.requiredData);
+        }
+
+        models.TaskVolunteer.destroy({
+            where: {
+                idTask: req.params.idTask,
+                idVolunteer: req.params.idVolunteer
+            }
+        }).then(function (item) {
+            return res.status(messages.db.successInsert.status)
+                .send(messages.db.successInsert);
         }).catch(function (err) {
             console.log(err);
             return res.status(messages.db.dbError.status)
