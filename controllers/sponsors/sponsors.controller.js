@@ -20,25 +20,33 @@ exports.getAllSponsors = (req, res) => {
 /**
  * Get all sponsors and tag the current conference
  */
-exports.getSponsorsWithConference = (req, res) => {
+exports.getSponsorsWithConference = [
 
-    //TODO: validate!
-    let idConference = req.params.idConference;
+    validator.idConferenceParam,
 
-    models.Sponsor.findAll({
-        include: {
-            as: 'conferences',
-            model: models.ConferenceSponsor,
-            where: {
-                'idConference': idConference
-            },
-            required: false
+    (req, res) => {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(messages.db.requiredData.status)
+                .send(messages.db.requiredData);
         }
-    })
-        .then(function (sponsors) {
-            res.send(sponsors);
-        });
-};
+
+        models.Sponsor.findAll({
+            include: {
+                as: 'conferences',
+                model: models.ConferenceSponsor,
+                where: {
+                    idConference: req.params.idConference
+                },
+                required: false
+            }
+        })
+            .then(function (sponsors) {
+                res.send(sponsors);
+            });
+    }
+];
 
 /**
  * Add a new sponsor
@@ -58,17 +66,12 @@ exports.addNewSponsor = [
                 .send(messages.db.requiredData);
         }
 
-        let nome = req.body.nome;
-        let categoria = req.body.categoria;
-        let link = req.body.link;
-        let logo = req.body.logo;
-
         models.Sponsor.create(
             {
-                'nome': nome,
-                'categoria': categoria,
-                'link': link,
-                'logo': logo
+                nome: req.body.nome,
+                categoria: req.body.categoria,
+                link: req.body.link,
+                logo: req.body.logo
             }
         ).then(function (item) {
             return res.status(messages.db.successInsert.status)
@@ -95,28 +98,19 @@ exports.updateSponsor = [
     (req, res) => {
 
         const errors = validationResult(req);
-
-        console.error(errors);
-
         if (!errors.isEmpty()) {
             return res.status(messages.db.requiredData.status)
                 .send(messages.db.requiredData);
         }
 
-        let idSponsor = req.body.idSponsor;
-        let nome = req.body.nome;
-        let categoria = req.body.categoria;
-        let link = req.body.link;
-        let logo = req.body.logo;
-
         models.Sponsor.update({
-            'nome': nome,
-            'categoria': categoria,
-            'link': link,
-            'logo': logo
+            nome: req.body.nome,
+            categoria: req.body.categoria,
+            link: req.body.link,
+            logo: req.body.logo
         }, {
             where: {
-                'idSponsor': idSponsor
+                'idSponsor': req.body.idSponsor
             }
         }).then(function (item) {
             return res.status(messages.db.successUpdate.status)
@@ -132,19 +126,29 @@ exports.updateSponsor = [
 /**
  * Remove a sponsor from the database
  */
-exports.deleteSponsor = (req, res) => {
-    let idSponsor = req.params.idSponsor;
+exports.deleteSponsor = [
 
-    models.Sponsor.destroy({
-        where: {
-            idSponsor: idSponsor
+    validator.idSponsorParam,
+
+    (req, res) => {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(messages.db.requiredData.status)
+                .send(messages.db.requiredData);
         }
-    }).then(function (item) {
-        res.status(messages.db.successDelete.status)
-            .send(messages.db.successDelete);
-    }).catch(function (err) {
-        console.log(err);
-        res.status(messages.db.dbError.status)
-            .send(messages.db.dbError);
-    });
-};
+
+        models.Sponsor.destroy({
+            where: {
+                idSponsor: req.params.idSponsor
+            }
+        }).then(function (item) {
+            res.status(messages.db.successDelete.status)
+                .send(messages.db.successDelete);
+        }).catch(function (err) {
+            console.log(err);
+            res.status(messages.db.dbError.status)
+                .send(messages.db.dbError);
+        });
+    }
+];

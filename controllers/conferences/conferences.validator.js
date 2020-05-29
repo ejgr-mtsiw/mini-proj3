@@ -1,19 +1,16 @@
 
-const { check } = require('express-validator');
+const { body, param } = require('express-validator');
 
 module.exports = {
-    // Id can't be empty
-    idConference: check('idConference').isNumeric().notEmpty(),
-    // Name can't be empty
-    nome: check('nome').trim().notEmpty(),
-    // Acrónimo can't be empty
-    acronimo: check('acronimo').trim().notEmpty(),
-    // Descrição can't be empty
-    descricao: check('descricao').trim().notEmpty(),
-    // Local can't be empty
-    local: check('local').trim().notEmpty(),
-    // Data can't be empty
-    data: check('data').isISO8601().toDate(),
-    // Email for participants
-    email: check('email').isEmail().notEmpty()
+    idConferenceParam: param('idConference').notEmpty().isNumeric(),
+    idConference: body('idConference').notEmpty().isNumeric(),
+    nome: body('nome').trim().notEmpty().escape(),
+    acronimo: body('acronimo').trim().notEmpty().escape(),
+    descricao: body('descricao').trim().notEmpty().escape(),
+    local: body('local').trim().notEmpty().escape(),
+    data: body('data').isISO8601().toDate(),
+    email: body('email').notEmpty().isEmail().normalizeEmail(),
+    idSpeakerParam: param('idSpeaker').notEmpty().isNumeric(),
+    idSponsorParam: param('idSponsor').notEmpty().isNumeric(),
+    emailParam: param('email').notEmpty().isEmail().normalizeEmail()
 };

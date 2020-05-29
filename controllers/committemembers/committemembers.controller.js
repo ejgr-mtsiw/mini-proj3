@@ -82,7 +82,6 @@ exports.updateCommitteeMember = [
     (req, res) => {
 
         const errors = validationResult(req);
-
         if (!errors.isEmpty()) {
             return res.status(messages.db.requiredData.status)
                 .send(messages.db.requiredData);
@@ -123,7 +122,6 @@ exports.deleteCommitteeMember = [
     (req, res) => {
 
         const errors = validationResult(req);
-
         if (!errors.isEmpty()) {
             return res.status(messages.db.requiredData.status)
                 .send(messages.db.requiredData);

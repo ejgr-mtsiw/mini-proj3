@@ -20,24 +20,32 @@ exports.getAllSpeakers = (req, res) => {
 /**
  * Get all speakers and tag the current conference
  */
-exports.getSpeakersWithConference = (req, res) => {
+exports.getSpeakersWithConference = [
 
-    //TODO: validate!
-    let idConference = req.params.idConference;
+    validator.idConferenceParam,
 
-    models.Speaker.findAll({
-        include: {
-            as: 'conferences',
-            model: models.ConferenceSpeaker,
-            where: {
-                'idConference': idConference
-            },
-            required: false
+    (req, res) => {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(messages.db.requiredData.status)
+                .send(messages.db.requiredData);
         }
-    }).then(function (speakers) {
-        res.send(speakers);
-    });
-};
+
+        models.Speaker.findAll({
+            include: {
+                as: 'conferences',
+                model: models.ConferenceSpeaker,
+                where: {
+                    'idConference': req.params.idConference
+                },
+                required: false
+            }
+        }).then(function (speakers) {
+            res.send(speakers);
+        });
+    }
+];
 
 /**
  * Get the list of speakers types
@@ -71,23 +79,15 @@ exports.addNewSpeaker = [
                 .send(messages.db.requiredData);
         }
 
-        let nome = req.body.nome;
-        let cargo = req.body.cargo;
-        let bio = req.body.bio;
-        let foto = req.body.foto;
-        let facebook = req.body.facebook;
-        let linkedin = req.body.linkedin;
-        let twitter = req.body.twitter;
-
         models.Speaker.create(
             {
-                'nome': nome,
-                'cargo': cargo,
-                'bio': bio,
-                'foto': foto,
-                'facebook': facebook,
-                'linkedin': linkedin,
-                'twitter': twitter
+                nome: req.body.nome,
+                cargo: req.body.cargo,
+                bio: req.body.bio,
+                foto: req.body.foto,
+                facebook: req.body.facebook,
+                linkedin: req.body.linkedin,
+                twitter: req.body.twitter
             }
         ).then(function (item) {
             return res.status(messages.db.successInsert.status)
@@ -104,6 +104,7 @@ exports.addNewSpeaker = [
  * Update a speaker
  */
 exports.updateSpeaker = [
+
     validator.idSpeaker,
     validator.nome,
     validator.cargo,
@@ -121,26 +122,17 @@ exports.updateSpeaker = [
                 .send(messages.db.requiredData);
         }
 
-        let idSpeaker = req.body.idSpeaker;
-        let nome = req.body.nome;
-        let cargo = req.body.cargo;
-        let bio = req.body.bio;
-        let foto = req.body.foto;
-        let facebook = req.body.facebook;
-        let linkedin = req.body.linkedin;
-        let twitter = req.body.twitter;
-
         models.Speaker.update({
-            'nome': nome,
-            'cargo': cargo,
-            'bio': bio,
-            'foto': foto,
-            'facebook': facebook,
-            'linkedin': linkedin,
-            'twitter': twitter
+            nome: req.body.nome,
+            cargo: req.body.cargo,
+            bio: req.body.bio,
+            foto: req.body.foto,
+            facebook: req.body.facebook,
+            linkedin: req.body.linkedin,
+            twitter: req.body.twitter
         }, {
             where: {
-                'idSpeaker': idSpeaker
+                'idSpeaker': req.body.idSpeaker
             }
         }).then(function (item) {
             return res.status(messages.db.successUpdate.status)
@@ -156,19 +148,29 @@ exports.updateSpeaker = [
 /**
  * Remove a speaker from the database
  */
-exports.deleteSpeaker = (req, res) => {
-    let idSpeaker = req.params.idSpeaker;
+exports.deleteSpeaker = [
 
-    models.Speaker.destroy({
-        where: {
-            idSpeaker: idSpeaker
+    validator.idSpeakerParam,
+
+    (req, res) => {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(messages.db.requiredData.status)
+                .send(messages.db.requiredData);
         }
-    }).then(function (item) {
-        res.status(messages.db.successDelete.status)
-            .send(messages.db.successDelete);
-    }).catch(function (err) {
-        console.log(err);
-        res.status(messages.db.dbError.status)
-            .send(messages.db.dbError);
-    });
-};
+
+        models.Speaker.destroy({
+            where: {
+                idSpeaker: req.params.idSpeaker
+            }
+        }).then(function (item) {
+            res.status(messages.db.successDelete.status)
+                .send(messages.db.successDelete);
+        }).catch(function (err) {
+            console.log(err);
+            res.status(messages.db.dbError.status)
+                .send(messages.db.dbError);
+        });
+    }
+];

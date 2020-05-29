@@ -64,9 +64,6 @@ exports.updateVolunteer = [
     (req, res) => {
 
         const errors = validationResult(req);
-
-        console.error(errors);
-
         if (!errors.isEmpty()) {
             return res.status(messages.db.requiredData.status)
                 .send(messages.db.requiredData);
@@ -94,19 +91,29 @@ exports.updateVolunteer = [
 /**
  * Remove a volunteer from the database
  */
-exports.deleteVolunteer = (req, res) => {
-    let idVolunteer = req.params.idVolunteer;
+exports.deleteVolunteer = [
 
-    models.Volunteer.destroy({
-        where: {
-            idVolunteer: idVolunteer
+    validator.idVolunteerParam,
+
+    (req, res) => {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(messages.db.requiredData.status)
+                .send(messages.db.requiredData);
         }
-    }).then(function (item) {
-        res.status(messages.db.successDelete.status)
-            .send(messages.db.successDelete);
-    }).catch(function (err) {
-        console.log(err);
-        res.status(messages.db.dbError.status)
-            .send(messages.db.dbError);
-    });
-};
+
+        models.Volunteer.destroy({
+            where: {
+                idVolunteer: req.params.idVolunteer
+            }
+        }).then(function (item) {
+            res.status(messages.db.successDelete.status)
+                .send(messages.db.successDelete);
+        }).catch(function (err) {
+            console.log(err);
+            res.status(messages.db.dbError.status)
+                .send(messages.db.dbError);
+        });
+    }
+];

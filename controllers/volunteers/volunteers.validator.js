@@ -1,13 +1,10 @@
 
-const { body } = require('express-validator');
+const { body, param } = require('express-validator');
 
 module.exports = {
-    // Id can't be empty
-    idVolunteer: body('idVolunteer').isNumeric().notEmpty(),
-    // Name can't be empty
-    nome: body('nome').trim().notEmpty(),
-    // Categoria can't be empty
-    email: body('email').isEmail().notEmpty(),
-    // Logo must be an URL
-    telefone: body('telefone').trim().notEmpty()
+    idVolunteerParam: param('idVolunteer').isNumeric().notEmpty(),
+    idVolunteer: body('idVolunteer').notEmpty().isNumeric(),
+    nome: body('nome').trim().notEmpty().escape(),
+    email: body('email').notEmpty().isEmail().normalizeEmail(),
+    telefone: body('telefone').trim().notEmpty().escape()
 };

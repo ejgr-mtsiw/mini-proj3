@@ -31,9 +31,6 @@ exports.addNewConference = [
     (req, res) => {
 
         const errors = validationResult(req);
-
-        console.error(errors);
-
         if (!errors.isEmpty()) {
             return res.status(messages.db.requiredData.status)
                 .send(messages.db.requiredData);
@@ -73,9 +70,6 @@ exports.updateConference = [
     (req, res) => {
 
         const errors = validationResult(req);
-
-        console.error(errors);
-
         if (!errors.isEmpty()) {
             return res.status(messages.db.requiredData.status)
                 .send(messages.db.requiredData);
@@ -83,11 +77,11 @@ exports.updateConference = [
 
         models.Conference.update(
             {
-                'nome': req.body.nome,
-                'acronimo': req.body.acronimo,
-                'descricao': req.body.descricao,
-                'local': req.body.local,
-                'data': req.body.data
+                nome: req.body.nome,
+                acronimo: req.body.acronimo,
+                descricao: req.body.descricao,
+                local: req.body.local,
+                data: req.body.data
             },
             {
                 where: {
@@ -108,177 +102,244 @@ exports.updateConference = [
 /**
  * Remove a conference from the database
  */
-exports.deleteConference = (req, res) => {
-    let idConference = req.params.idConference;
+exports.deleteConference = [
 
-    models.Conference.destroy({
-        where: {
-            'idConference': idConference
+    validator.idConferenceParam,
+
+    (req, res) => {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(messages.db.requiredData.status)
+                .send(messages.db.requiredData);
         }
-    }).then(function (item) {
-        return res.status(messages.db.successDelete.status)
-            .send(messages.db.successDelete);
-    }).catch(function (err) {
-        console.log(err);
-        return res.status(messages.db.dbError.status)
-            .send(messages.db.dbError);
-    });
-};
+
+        models.Conference.destroy({
+            where: {
+                idConference: req.params.idConference
+            }
+        }).then(function (item) {
+            return res.status(messages.db.successDelete.status)
+                .send(messages.db.successDelete);
+        }).catch(function (err) {
+            console.log(err);
+            return res.status(messages.db.dbError.status)
+                .send(messages.db.dbError);
+        });
+    }
+];
 
 
 /**
  * Get speakers for some conference
  */
-exports.getConferenceSpeakers = (req, res) => {
+exports.getConferenceSpeakers = [
 
-    let idConference = req.params.idConference;
+    validator.idConferenceParam,
 
-    models.Speaker.findAll({
-        include: {
-            as: 'conferences',
-            model: models.ConferenceSpeaker,
-            required: true
-        },
-        where: {
-            '$conferences.idConference$': idConference
+    (req, res) => {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(messages.db.requiredData.status)
+                .send(messages.db.requiredData);
         }
-    }).then(function (speakers) {
-        res.send(speakers);
-    });
-};
+
+        models.Speaker.findAll({
+            include: {
+                as: 'conferences',
+                model: models.ConferenceSpeaker,
+                required: true
+            },
+            where: {
+                '$conferences.idConference$': req.params.idConference
+            }
+        }).then(function (speakers) {
+            res.send(speakers);
+        });
+    }
+];
 
 /**
  * Adds speaker to conference
  */
-exports.addSpeakerToConference = (req, res) => {
+exports.addSpeakerToConference = [
 
-    //TODO: validate!
-    let idConference = req.params.idConference;
-    let idSpeaker = req.params.idSpeaker;
+    validator.idConferenceParam,
+    validator.idSpeakerParam,
 
-    models.ConferenceSpeaker.create({
-        'idConference': idConference,
-        'idSpeaker': idSpeaker
-    }).then(function (item) {
-        return res.status(messages.db.successInsert.status)
-            .send(messages.db.successInsert);
-    }).catch(function (err) {
-        console.log(err);
-        return res.status(messages.db.dbError.status)
-            .send(messages.db.dbError);
-    });
-};
+    (req, res) => {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(messages.db.requiredData.status)
+                .send(messages.db.requiredData);
+        }
+
+        models.ConferenceSpeaker.create({
+            idConference: req.params.idConference,
+            idSpeaker: req.params.idSpeaker
+        }).then(function (item) {
+            return res.status(messages.db.successInsert.status)
+                .send(messages.db.successInsert);
+        }).catch(function (err) {
+            console.log(err);
+            return res.status(messages.db.dbError.status)
+                .send(messages.db.dbError);
+        });
+    }
+];
 
 /**
  * Removes a speaker from a conference
  */
-exports.removeSpeakerFromConference = (req, res) => {
+exports.removeSpeakerFromConference = [
 
-    //TODO: validate!
-    let idConference = req.params.idConference;
-    let idSpeaker = req.params.idSpeaker;
+    validator.idConferenceParam,
+    validator.idSpeakerParam,
 
-    models.ConferenceSpeaker.destroy({
-        where: {
-            'idConference': idConference,
-            'idSpeaker': idSpeaker
+    (req, res) => {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(messages.db.requiredData.status)
+                .send(messages.db.requiredData);
         }
-    }).then(function (item) {
-        return res.status(messages.db.successDelete.status)
-            .send(messages.db.successDelete);
-    }).catch(function (err) {
-        console.log(err);
-        return res.status(messages.db.dbError.status)
-            .send(messages.db.dbError);
-    });
-};
+
+        models.ConferenceSpeaker.destroy({
+            where: {
+                idConference: req.params.idConference,
+                idSpeaker: req.params.idSpeaker
+            }
+        }).then(function (item) {
+            return res.status(messages.db.successDelete.status)
+                .send(messages.db.successDelete);
+        }).catch(function (err) {
+            console.log(err);
+            return res.status(messages.db.dbError.status)
+                .send(messages.db.dbError);
+        });
+    }
+];
 
 /**
  * Get sponsors for some conference
  */
-exports.getConferenceSponsors = (req, res) => {
+exports.getConferenceSponsors = [
 
-    //TODO: validate!
-    let idConference = req.params.idConference;
+    validator.idConferenceParam,
 
-    models.Sponsor.findAll({
-        include: {
-            as: 'conferences',
-            model: models.ConferenceSponsor,
-            required: true
-        },
-        where: {
-            '$conferences.idConference$': idConference
+    (req, res) => {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(messages.db.requiredData.status)
+                .send(messages.db.requiredData);
         }
-    }).then(function (sponsors) {
-        res.send(sponsors);
-    });
-};
+
+        models.Sponsor.findAll({
+            include: {
+                as: 'conferences',
+                model: models.ConferenceSponsor,
+                required: true
+            },
+            where: {
+                '$conferences.idConference$': req.params.idConference
+            }
+        }).then(function (sponsors) {
+            res.send(sponsors);
+        });
+    }
+];
 
 /**
  * Adds sponsor to conference
  */
-exports.addSponsorToConference = (req, res) => {
+exports.addSponsorToConference = [
 
-    //TODO: validate!
-    let idConference = req.params.idConference;
-    let idSponsor = req.params.idSponsor;
+    validator.idConferenceParam,
+    validator.idSponsorParam,
 
-    models.ConferenceSponsor.create({
-        'idConference': idConference,
-        'idSponsor': idSponsor
-    }).then(function (item) {
-        return res.status(messages.db.successInsert.status)
-            .send(messages.db.successInsert);
-    }).catch(function (err) {
-        console.log(err);
-        return res.status(messages.db.dbError.status)
-            .send(messages.db.dbError);
-    });
-};
+    (req, res) => {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(messages.db.requiredData.status)
+                .send(messages.db.requiredData);
+        }
+
+        models.ConferenceSponsor.create({
+            idConference: req.params.idConference,
+            idSponsor: req.params.idSponsor
+        }).then(function (item) {
+            return res.status(messages.db.successInsert.status)
+                .send(messages.db.successInsert);
+        }).catch(function (err) {
+            console.log(err);
+            return res.status(messages.db.dbError.status)
+                .send(messages.db.dbError);
+        });
+    }
+];
 
 /**
  * Removes a sponsor from a conference
  */
-exports.removeSponsorFromConference = (req, res) => {
+exports.removeSponsorFromConference = [
 
-    //TODO: validate!
-    let idConference = req.params.idConference;
-    let idSponsor = req.params.idSponsor;
+    validator.idConferenceParam,
+    validator.idSponsorParam,
 
-    models.ConferenceSponsor.destroy({
-        where: {
-            'idConference': idConference,
-            'idSponsor': idSponsor
+    (req, res) => {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(messages.db.requiredData.status)
+                .send(messages.db.requiredData);
         }
-    }).then(function (item) {
-        return res.status(messages.db.successDelete.status)
-            .send(messages.db.successDelete);
-    }).catch(function (err) {
-        console.log(err);
-        return res.status(messages.db.dbError.status)
-            .send(messages.db.dbError);
-    });
-};
+
+        models.ConferenceSponsor.destroy({
+            where: {
+                idConference: req.params.idConference,
+                idSponsor: req.params.idSponsor
+            }
+        }).then(function (item) {
+            return res.status(messages.db.successDelete.status)
+                .send(messages.db.successDelete);
+        }).catch(function (err) {
+            console.log(err);
+            return res.status(messages.db.dbError.status)
+                .send(messages.db.dbError);
+        });
+    }
+];
 
 /**
  * Obter a lista de participantes na conferência
  */
-exports.getConferenceParticpants = (req, res) => {
+exports.getConferenceParticpants = [
 
-    //TODO: validate!
-    idConference = req.params.idConference;
+    validator.idConferenceParam,
 
-    models.ConferenceParticipant.findAll(
-        {
-            where: {
-                'idConference': idConference
-            }
+    (req, res) => {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(messages.db.requiredData.status)
+                .send(messages.db.requiredData);
         }
-    ).then(function (participants) {
-        res.send(participants);
-    });
-};
+
+        models.ConferenceParticipant.findAll(
+            {
+                where: {
+                    idConference: req.params.idConference
+                }
+            }
+        ).then(function (participants) {
+            res.send(participants);
+        });
+    }
+];
 
 /**
  * Adicionar um participante à conferência
@@ -292,9 +353,6 @@ exports.addParticipantToConference = [
     (req, res) => {
 
         const errors = validationResult(req);
-
-        console.log(errors);
-
         if (!errors.isEmpty()) {
             return res.status(messages.db.requiredData.status)
                 .send(messages.db.requiredData);
@@ -328,18 +386,21 @@ exports.addParticipantToConference = [
  */
 exports.removeParticipantFromConference = [
 
-    validator.idConference,
-    validator.email,
+    validator.idConferenceParam,
+    validator.emailParam,
 
     (req, res) => {
-        let idConference = req.params.idConference;
-        let email = req.params.email;
 
-        console.info("Removing participant: " + email);
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(messages.db.requiredData.status)
+                .send(messages.db.requiredData);
+        }
+
         models.ConferenceParticipant.destroy({
             where: {
-                idParticipant: email,
-                idConference: idConference
+                idParticipant: req.params.email,
+                idConference: req.params.idConference
             }
         }).then((item) => {
             res.status(messages.db.successDelete.status)
