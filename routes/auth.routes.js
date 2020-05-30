@@ -10,7 +10,7 @@ module.exports = (auth) => {
         authController.signin);
 
     router.get('/signout',
-        auth.required,
+        auth.optional,
         authController.signout);
 
     return router;

@@ -9,7 +9,6 @@ exports.signin = (req, res) => {
 
 exports.signout = (req, res) => {
     req.session.destroy();
-    return res.status(messages.user.logoutSuccess.status)
-        .send(messages.user.logoutSuccess);
+    return res.redirect('/pwa/index.html?signout=ok');
 };
 
