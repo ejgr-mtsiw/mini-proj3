@@ -1,5 +1,15 @@
-var exports = module.exports = {}
+const messages = require('../config/messages/login');
 
-exports.signup = function (req, res) {
-    res.render('signup');
-}
+exports = module.exports = {};
+
+exports.signin = (req, res) => {
+    return res.status(messages.user.signinSucces.status)
+        .send(messages.user.signinSucces);
+};
+
+exports.signout = (req, res) => {
+    req.session.destroy();
+    return res.status(messages.user.logoutSuccess.status)
+        .send(messages.user.logoutSuccess);
+};
+

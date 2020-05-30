@@ -1,18 +1,18 @@
+const LocalStrategy = require('passport-local');
 var bCrypt = require('bcryptjs');
 
 const jsonMessages = require('../messages/login');
+const User = require('../../models').User;
 
-module.exports = function (passport, user) {
-    var User = user;
-    var LocalStrategy = require('passport-local').Strategy;
+module.exports = (passport) => {
 
-    passport.serializeUser(function (user, done) {
+    passport.serializeUser((user, done) => {
         return done(null, user.id);
     });
 
     // used to deserialize the user
-    passport.deserializeUser(function (id, done) {
-        User.findByPk(id).then(function (user) {
+    passport.deserializeUser((id, done) => {
+        User.findByPk(id).then((user) => {
             if (user) {
                 return done(null, user.get());
             }
@@ -27,13 +27,13 @@ module.exports = function (passport, user) {
         passwordField: 'password',
         passReqToCallback: true
     },
-        function (req, email, password, done) {
+        (req, email, password, done) => {
             // request object is now first argument
-            const isValidPassword = function (password, hash) {
+            const isValidPassword = (password, hash) => {
                 return bCrypt.compareSync(password, hash);
             }
 
-            // const generateHash = function (password) {
+            // const generateHash = (password)=> {
             //     return bCrypt.hashSync(password, bCrypt.genSaltSync(8), null);
             // };
 
@@ -59,4 +59,4 @@ module.exports = function (passport, user) {
             });
         }
     ));
-}
+};
