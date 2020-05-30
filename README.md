@@ -3,6 +3,8 @@
 
 A tarefa 4.2 corresponde ao desenvolvimento inicial do back-end, onde para além de criar a aplicação no Express visa o processamento dos formulários no lado do servidor com os aspetos de validação e pedidos GET e POST. Todo esta implementação de processamentos de pedidos implica a definição de rotas. 
 
+Este projeto fornece o backend para o frontend do projeto [mini-proj2](https://github.com/ejgr-mtsiw/mini-proj2)
+
 ## Objetivos
 
 Criar as páginas de gestão e respetivas rotas para as entidades `Voluntários` e `Membros do Comité Científico`
