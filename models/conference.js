@@ -24,37 +24,14 @@ module.exports = function (sequelize, DataTypes) {
             }
         );
 
-        /*
-        
-        Parent.belongsToMany( Child, {
-    as: [Relationship],
-    through: [Parent_Child] //this can be string or a model,
-    foreignKey: 'Parent_rowId'
-});
-
-Child.belongsToMany(Parent, {
-    as: [Relationship2],
-    through: [Parent_Child],
-    foreignKey: 'Child_rowId'
-});
-
-        */
-        /*
-                models.Conference.belongsToMany(models.Speaker,
-                    {
-                        as: 'speakers',
-                        through: models.ConferenceSpeaker,
-                        foreignKey: 'idConference'
-                    });
-                    */
-        models.Speaker.hasMany(models.ConferenceSpeaker,
+        models.Conference.hasMany(models.ConferenceSpeaker,
             {
                 foreignKey: {
                     name: 'idConference'
                 }
             });
 
-        models.Speaker.hasMany(models.ConferenceSponsor,
+        models.Conference.hasMany(models.ConferenceSponsor,
             {
                 foreignKey: {
                     name: 'idConference'
