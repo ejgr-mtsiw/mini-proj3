@@ -33,14 +33,6 @@ module.exports = function (sequelize, DataTypes) {
             }
         );
 
-        /*
-        models.Speaker.belongsToMany(models.Conference,
-            {
-                as: 'conferences',
-                through: models.ConferenceSpeaker,
-                foreignKey: 'idSpeaker'
-            });
-            */
         models.Speaker.hasMany(models.ConferenceSpeaker,
             {
                 as: 'conferences',
