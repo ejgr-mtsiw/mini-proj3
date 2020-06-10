@@ -1,7 +1,7 @@
 # mini-proj3
-[PWA] Tarefa 4.2: Mini-projeto - desenvolvimento do back-end
+[PWA] Tarefa 5.2: Mini-projeto - desenvolvimento do back-end
 
-A tarefa 4.2 corresponde ao desenvolvimento inicial do back-end, onde para além de criar a aplicação no Express visa o processamento dos formulários no lado do servidor com os aspetos de validação e pedidos GET e POST. Todo esta implementação de processamentos de pedidos implica a definição de rotas. 
+A tarefa 5.2 corresponde ao desenvolvimento final do back-end, onde para além de criar a aplicação no Express visa o processamento dos formulários no lado do servidor com os aspetos de validação e pedidos GET e POST. Todo esta implementação de processamentos de pedidos implica a definição de rotas. 
 
 Este projeto fornece o backend para o frontend do projeto [mini-proj2](https://github.com/ejgr-mtsiw/mini-proj2)
 
@@ -21,40 +21,6 @@ Foi feito um clone da base de dados original para poder fazer o desenvolvimento 
 
 Todos os controladores foram reescritos para eliminar a utilização de queries SQL raw.
 Todas as consultas à base de dados são feitas recorrendo à biblioteca [Sequelize](https://sequelize.org/)
-
-As novas entidades criadas não existem na base de dados do projeto e são persistidas recorrendo a ficheiros JSON.
-Para simplificar o desenvolvimento os modelos das novas entidades foram expandidos de forma poderem utilizar os ficheiros JSON de forma transparente:
-
-Atualizar os dados de um sponsor, recorrendo a uma tabela na base de dados:
-```
-models.Sponsor.update({
-    nome: req.body.nome,
-    categoria: req.body.categoria,
-    link: req.body.link,
-    logo: req.body.logo
-}, {
-    where: {
-        'idSponsor': req.body.idSponsor
-    }
-}).then(function (item) {
-    ...
-```
-
-Atualizar os dados de um voluntário, recorrendo a ficheiro JSON:
-```
-models.Volunteer.update({
-    'nome': req.body.nome,
-    'email': req.body.email,
-    'telefone': req.body.telefone
-}, {
-    where: {
-        'idVolunteer': req.body.idVolunteer
-    }
-}).then(function (item) {
-    ...
-```
-
-Isto permite simplificar a mudança quando forem implementadas as tabelas SQL correspondentes a estas novas entidades.
 
 A autenticação de utilizadores é feita recorrendo à biblioteca [Passport](http://www.passportjs.org/).
 
