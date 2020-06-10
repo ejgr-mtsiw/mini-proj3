@@ -362,7 +362,19 @@ exports.addParticipantToConference = [
         let email = req.body.email;
         let nome = req.body.nome;
 
-        //! TODO: Check for duplicate user
+        // Verificar inscrição duplicada
+        models.ConferenceParticipant.findOne({
+            where: {
+                idConference: idConference,
+                idParticipant: email
+            }
+        }).then((participant) => {
+            if (participant != null) {
+                //Já existe
+                return res.status(messages.db.duplicateEmail.status)
+                    .send(messages.db.duplicateEmail);
+            }
+        });
 
         models.ConferenceParticipant.create(
             {
@@ -532,26 +544,7 @@ exports.getConferenceTasks = [
                 idConference: idConference
             }
         }).then(function (tasks) {
-
-            // TODO: Remove when using SQL
-            // The next steps are necessary to simulate a relation between
-            // the tables, as they are just JSON files for now
-
-            return models.TaskVolunteer.findAll().then((volunteers) => {
-                for (let i = 0; i < tasks.length; i++) {
-                    tasks[i].dataValues.volunteers = [];
-
-                    for (let j = 0; j < volunteers.length; j++) {
-                        if (Number(volunteers[j].idTask) === Number(tasks[i].idTask)) {
-                            tasks[i].dataValues.volunteers.push({
-                                idVolunteer: volunteers[j].idVolunteer
-                            });
-                        }
-                    }
-                }
-
-                return res.send(tasks);
-            });
+            return res.send(tasks);
         });
     }
 ];
