@@ -20,12 +20,16 @@ module.exports = function (sequelize, DataTypes) {
     Conference.associate = function (models) {
         models.Conference.hasMany(models.ConferenceParticipant,
             {
-                foreignKey: 'idConference'
+                as: 'participants',
+                foreignKey: {
+                    name: 'idConference'
+                }
             }
         );
 
         models.Conference.hasMany(models.ConferenceSpeaker,
             {
+                as: 'speakers',
                 foreignKey: {
                     name: 'idConference'
                 }
@@ -33,6 +37,15 @@ module.exports = function (sequelize, DataTypes) {
 
         models.Conference.hasMany(models.ConferenceSponsor,
             {
+                as: 'sponsors',
+                foreignKey: {
+                    name: 'idConference'
+                }
+            });
+
+        models.Conference.hasMany(models.ConferenceCommittee,
+            {
+                as: 'committee',
                 foreignKey: {
                     name: 'idConference'
                 }
